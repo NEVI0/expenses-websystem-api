@@ -33,7 +33,15 @@ const insertExpense = (req, res, next) => {
 const updateExpenseById = (req, res, next) => {}
 
 /* Deleta uma Expense pelo ID */
-const deleteExpenseById = (req, res, next) => {}
+const deleteExpenseById = (req, res, next) => {
+    Expenses.findByIdAndDelete(req.params.id, (err, resp) => {
+        if (err) {
+            return res.json(err);
+        } else {
+            return res.status(200).send("Despesa deletada com Sucesso");
+        }
+    });
+}
 
 /* Exporta os Controllers para as rotas */
 module.exports = { getExpensesByUserId, insertExpense, updateExpenseById, deleteExpenseById }
