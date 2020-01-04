@@ -30,7 +30,7 @@ const insertExpense = (req, res, next) => {
         if (err) {
             return res.json(err);
         } else {
-            return res.status(200).send(`Despesa: ${resp.name} - Inserida com sucesso!`);
+            return res.json(resp);
         }
     });
 }
