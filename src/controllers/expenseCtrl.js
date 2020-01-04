@@ -20,7 +20,13 @@ const getExpensesByUserId = (req, res, next) => {
 
 /* Inseri uma nova Despesa */
 const insertExpense = (req, res, next) => {
-    Expenses.create(req.body, (err, resp) => {
+    Expenses.create({
+        name: req.body.name,
+        value: req.body.value,
+        createdAt: req.body.createdAt,
+        description: req.body.description,
+        userId: req.body.userId
+    }, (err, resp) => {
         if (err) {
             return res.json(err);
         } else {
