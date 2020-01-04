@@ -9,7 +9,7 @@ module.exports = mongoose.connect(process.env.URI_MONGO, {
     useNewUrlParser: true,
     useUnifiedTopology: true
 }).then(resp => {
-    console.log(`MongoDB's Conencted!`);
+    console.log(`MongoDB's Connected!`);
 }).catch(err => {
     console.log(`An Error Occured \n Error: ${err}`);
 });
