@@ -7,7 +7,8 @@ require("dotenv").config();
 /* Exporta a Conexão para o arquivo inicializador */
 module.exports = mongoose.connect(process.env.URI_MONGO, {
     useNewUrlParser: true,
-    useUnifiedTopology: true
+    useUnifiedTopology: true,
+    useFindAndModify: false
 }).then(resp => {
     console.log(`MongoDB's Connected!`);
 }).catch(err => {
