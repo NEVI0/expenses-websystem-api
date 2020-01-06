@@ -130,18 +130,8 @@ const login = (req, res, next) => {
 /* Atualização de usuário */
 const updateUserSimple = (req, res, next) => {
 
-    /* Pega as informações do usuário */
-    const name = req.body.name || "";
-    const email = req.body.email || "";
-    const salary = req.body.salary || "";
-
-    /* Verifica se o email está correto */
-    if (!emailRegex.test(email)) {
-        return res.status(400).json({ errorMsg: "O E-mail está incorreto." });
-    }
-
     /* Busca no banco um usuário existente */
-    User.findOne({ email: email }, (err, user) => {
+    User.findOne({ email: req.body.email }, (err, user) => {
 
         /* Se houver algum error, o retorna */
         if (err) {
@@ -154,19 +144,11 @@ const updateUserSimple = (req, res, next) => {
             return res.status(400).json({ errorMsg: "O Email já está cadastrado" });
         } else {
 
-            User.findByIdAndUpdate(req.params.id, {
-                name: name,
-                email: email,
-                salary: salary,                
-                imgName: "376574365784-imagem.png",
-                imgUrl: "https://amazon-s3.com/debbuing"
-            }, { new: true }, (err , resp) => {
-                /* 1 - Se houver algum error, o retorna */
-                /* 2 - Senão retorna os dados do usuário */
+            User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err , resp) => {
                 if (err) {
-                    return res.status(503).json(err);
+                    return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
                 } else {
-                    return res.status(200).json(resp);
+                    return res.status(200).json(resp); /* 2 - Senão retorna os dados do usuário */
                 }
             });
 
@@ -183,17 +165,17 @@ const updateUserAdvanced = (req, res, next) => {
     const oldPassword = req.body.old_password || "";
     const password = req.body.password || "";
     const confPassword = req.body.conf_password || "";
+    
+    /* Verifica se a senha nova é diferente da antiga */
+    if (password === oldPassword) {
+        return res.status(400).json({ errorMsg: "A sua nova senha não pode ser igual a antiga." });
+    }
 
     /* Verifica se a senha está correta */
     if (!passwordRegex.test(password)) {
         return res.status(400).json({
             errorMsg: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
         });
-    }
-    
-    /* Verifica se a senha nova é diferente da antiga */
-    if (password === oldPassword) {
-        return res.status(400).json({ errorMsg: "A sua nova senha não pode ser igual a antiga." });
     }
 
     /* Verifica se as senha são iguais */
@@ -210,12 +192,10 @@ const updateUserAdvanced = (req, res, next) => {
     User.findByIdAndUpdate(req.params.id, {
         password: passwordHash
     }, { new: true }, (err, resp) => {
-        /* 1 - Se houver algum error, o retorna */
-        /* 2 - Senão retorna os dados do usuário */
         if (err) {
-            return res.status(503).json(err);
+            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
-            return res.status(200).json(resp);
+            return res.status(200).json(resp); /* 2 - Senão retorna os dados do usuário */
         }
     });
 
