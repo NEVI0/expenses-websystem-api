@@ -8,7 +8,7 @@ To code, I've been using Node and MongoDB to do the Backend (API), and to do the
 
 * Create the User Controller :ballot_box_with_check:
 * User CRUD :ballot_box_with_check:
-* Expenses CRUD :heavy_plus_sign:
+* Expenses CRUD :ballot_box_with_check:
 * Create the Multer config :x:
 * Create the Nodemail config :x:
 * Block the Routes :x:
