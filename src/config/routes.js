@@ -35,9 +35,10 @@ module.exports = (server) => {
     /* =========== Rotas de Despesas =========== */
 
     /* Rotas Fechadas */
+    openApi.get("/allExpenses", ExpensesCtrl.getExpenses);
     openApi.get("/expenses/:userId", ExpensesCtrl.getExpensesByUserId);
     openApi.post("/expenses", ExpensesCtrl.insertExpense);
-    openApi.put("/expenses/:id", ExpensesCtrl.updateExpenseById);
-    openApi.delete("/expenses/:id", ExpensesCtrl.deleteExpenseById);
+    openApi.put("/expenses/:id", ExpensesCtrl.updateExpense);
+    openApi.delete("/expenses/:id", ExpensesCtrl.deleteExpense);
 
 }
