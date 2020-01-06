@@ -1,15 +1,19 @@
-# Sistema Web para Despesas Pessoais
+# Web System - Personal Expenses
 
-Olá, meu nome é Névio costa Magagnin, nesse repositório estou tentando criar um sistema web para controlar despesas pessoais.
-Estou usando o Node com o MongoDB para fazer a API (Backend) da Aplicação e o Angular com o Materialize para criar a interface do usuário (Frontend).
+Hello, my name is Névio Costa Magagnin, in this repository, I'm trying to create a Web System to Personal Expenses
+
+To code, I've been using Node and MongoDB to do the Backend (API), and to do the Frontend (Client Side), I've been using the Angular and Materialize to create a awesome interface. 
 
 # To-Do List
 
-* CRUD de despesas :heavy_plus_sign:
-* CRUD de usuário :x:
-* Criar o controller de usuário :x:
-* Criar e configurar o multer :x:
-* Bloquear Rotas :x:
-* Melhorar a API :x:
+* Create the User Controller :ballot_box_with_check:
+* User CRUD :ballot_box_with_check:
+* Expenses CRUD :heavy_plus_sign:
+* Create the Multer config :x:
+* Create the Nodemail config :x:
+* Block the Routes :x:
+* Upgrade the API :x:
 
-Possiveis implementações serão informadas
+# Important
+
+Node's Awesome!!! hushushushus
