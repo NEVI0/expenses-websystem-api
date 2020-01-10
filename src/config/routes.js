@@ -36,6 +36,7 @@ module.exports = (server) => {
 
     /* Rotas Fechadas */
     openApi.get("/allExpenses", ExpensesCtrl.getExpenses);
+    openApi.get("/lastExpenses/:userId", ExpensesCtrl.getLastTen);
     openApi.get("/expenses/:userId", ExpensesCtrl.getExpensesByUserId);
     openApi.post("/expenses", ExpensesCtrl.insertExpense);
     openApi.put("/expenses/:id", ExpensesCtrl.updateExpense);
