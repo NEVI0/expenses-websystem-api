@@ -7,6 +7,17 @@ const Expenses = mongoose.model("Expense");
 
 /* ===================== Controllers ===================== */
 
+/* Busca as 10 ultimas Despesas */
+const getLastTen = (req, res, next) => {
+    Expenses.find({ userId: req.params.userId }, (err, resp) => {
+        if (err) {
+            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+        } else {
+            return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
+        }
+    }).sort({ _id: -1 }).limit(10);
+}
+
 /* Busca todas as Despesas */
 const getExpenses = (req, res, next) => {
     Expenses.find((err, resp) => {
@@ -63,4 +74,4 @@ const deleteExpense = (req, res, next) => {
 }
 
 /* Exporta os Controllers para as rotas */
-module.exports = { getExpenses, getExpensesByUserId, insertExpense, updateExpense, deleteExpense }
+module.exports = { getLastTen, getExpenses, getExpensesByUserId, insertExpense, updateExpense, deleteExpense }
