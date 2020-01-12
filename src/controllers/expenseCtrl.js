@@ -40,6 +40,32 @@ const getExpensesByUserId = (req, res, next) => {
     });
 }
 
+/* Busca para o usuário o lucro que ele está tendo */
+const getProfit = (req, res, next) => {    
+    Expenses.find({ userId: req.params.userId }, (err, resp) => {
+        
+        /* Se houver algum error, o retorna */
+        if (err) {
+            return res.status(503).json(err); 
+        }
+
+        /* Variavel que armazena a soma dos valores */
+        var values = 0;
+
+        /* Percorre o array de resposta e armazena os valores na variavel */
+        for (var i = 0; i < resp.length; i++) {
+            values += resp[i].value;
+        }
+
+        /* Retorna a soma de todos os valores */
+        return res.status(200).json({
+            success: true,
+            value: values
+        });
+
+    });
+}
+
 /* Inseri uma nova Despesa */
 const insertExpense = (req, res, next) => {
     Expenses.create(req.body, (err, resp) => {
@@ -74,4 +100,4 @@ const deleteExpense = (req, res, next) => {
 }
 
 /* Exporta os Controllers para as rotas */
-module.exports = { getLastTen, getExpenses, getExpensesByUserId, insertExpense, updateExpense, deleteExpense }
+module.exports = { getLastTen, getExpenses, getExpensesByUserId, getProfit, insertExpense, updateExpense, deleteExpense }
