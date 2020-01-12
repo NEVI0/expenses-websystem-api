@@ -42,4 +42,6 @@ module.exports = (server) => {
     openApi.put("/expenses/:id", ExpensesCtrl.updateExpense);
     openApi.delete("/expenses/:id", ExpensesCtrl.deleteExpense);
 
+    openApi.get("/profit/:userId", ExpensesCtrl.getProfit);
+
 }
