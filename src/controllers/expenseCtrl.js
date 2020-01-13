@@ -35,7 +35,11 @@ const getExpensesByUserId = (req, res, next) => {
     /* Pega a page por parametro GET */
     const { page = 1 } = req.query;
 
-    Expenses.paginate({ userId: req.params.userId }, { page, limit: 10 }, (err, resp) => {
+    Expenses.paginate({
+        userId: req.params.userId 
+    }, { 
+        page, limit: 10, sort: { _id: -1 }
+    }, (err, resp) => {
         if (err) {
             return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
