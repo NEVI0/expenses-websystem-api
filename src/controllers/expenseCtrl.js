@@ -32,20 +32,29 @@ const getExpenses = (req, res, next) => {
 /* Busca todas das Despesas pelo ID do Usuário */
 const getExpensesByUserId = (req, res, next) => {
 
-    /* Pega a page por parametro GET */
-    const { page = 1 } = req.query;
-
-    Expenses.paginate({
-        userId: req.params.userId 
-    }, { 
-        page, limit: 10, sort: { _id: -1 }
-    }, (err, resp) => {
+    /* Solução temporária */
+    Expenses.find({ userId: req.params.userId }, (err, resp) => {
         if (err) {
             return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
         }
     });
+
+    /* Pega a page por parametro GET */
+    // const { page = 1 } = req.query;
+
+    // Expenses.paginate({
+    //     userId: req.params.userId 
+    // }, { 
+    //     page, limit: 10, sort: { _id: -1 }
+    // }, (err, resp) => {
+    //     if (err) {
+    //         return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+    //     } else {
+    //         return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
+    //     }
+    // });
 }
 
 /* Busca para o usuário o lucro que ele está tendo */
