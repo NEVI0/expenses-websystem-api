@@ -39,7 +39,7 @@ const getExpensesByUserId = (req, res, next) => {
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
         }
-    });
+    }).sort({ _id: -1 });
 
     /* Pega a page por parametro GET */
     // const { page = 1 } = req.query;
@@ -57,8 +57,8 @@ const getExpensesByUserId = (req, res, next) => {
     // });
 }
 
-/* Busca para o usuário o lucro que ele está tendo */
-const getProfit = (req, res, next) => {    
+/* Faz o controle de dados para o usuário */
+const getUserController = (req, res, next) => {
     Expenses.find({ userId: req.params.userId }, (err, resp) => {
         
         /* Se houver algum error, o retorna */
@@ -74,10 +74,17 @@ const getProfit = (req, res, next) => {
             values += resp[i].value;
         }
 
+        /* Faz a média de valores */
+        const avg = values / resp.length;
+
         /* Retorna a soma de todos os valores */
         return res.status(200).json({
             success: true,
-            value: values
+            userName: resp[0].userData[0].userName,
+            userEmail: resp[0].userData[0].userEmail,
+            userSalary: resp[0].userData[0].salary,
+            sumOfValues: values,
+            avgOfValues: avg
         });
 
     });
@@ -117,4 +124,4 @@ const deleteExpense = (req, res, next) => {
 }
 
 /* Exporta os Controllers para as rotas */
-module.exports = { getLastTen, getExpenses, getExpensesByUserId, getProfit, insertExpense, updateExpense, deleteExpense }
+module.exports = { getLastTen, getExpenses, getExpensesByUserId, getUserController, insertExpense, updateExpense, deleteExpense }
