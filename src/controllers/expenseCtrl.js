@@ -80,9 +80,11 @@ const getDataController = (req, res, next) => {
         /* Retorna a soma de todos os valores */
         return res.status(200).json({
             success: true,
+            userId: req.params.userId,
             userName: resp[0].userData[0].userName,
             userEmail: resp[0].userData[0].userEmail,
             userSalary: resp[0].userData[0].salary,
+            numberOfExpenses: resp.length,
             sumOfValues: values,
             avgOfValues: avg
         });
