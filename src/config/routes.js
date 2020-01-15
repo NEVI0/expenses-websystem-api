@@ -42,6 +42,6 @@ module.exports = (server) => {
     openApi.put("/expenses/:id", ExpensesCtrl.updateExpense);
     openApi.delete("/expenses/:id", ExpensesCtrl.deleteExpense);
 
-    openApi.get("/userController/:userId", ExpensesCtrl.getUserController);
+    openApi.get("/userController/:userId", ExpensesCtrl.getDataController);
 
 }
