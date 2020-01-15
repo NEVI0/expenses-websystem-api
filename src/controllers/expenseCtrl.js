@@ -58,7 +58,7 @@ const getExpensesByUserId = (req, res, next) => {
 }
 
 /* Faz o controle de dados para o usuário */
-const getUserController = (req, res, next) => {
+const getDataController = (req, res, next) => {
     Expenses.find({ userId: req.params.userId }, (err, resp) => {
         
         /* Se houver algum error, o retorna */
