@@ -126,4 +126,12 @@ const deleteExpense = (req, res, next) => {
 }
 
 /* Exporta os Controllers para as rotas */
-module.exports = { getLastTen, getExpenses, getExpensesByUserId, getDataController, insertExpense, updateExpense, deleteExpense }
+module.exports = { 
+    getLastTen,
+    getExpenses,
+    getExpensesByUserId,
+    getDataController,
+    insertExpense,
+    updateExpense,
+    deleteExpense
+}
