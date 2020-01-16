@@ -18,7 +18,7 @@ module.exports = (server) => {
     /* Configura as Rotas Fechadas */
     const api = express.Router();
     server.use("/api", api);
-    api.use("/auth", auth);
+    api.use(auth);
 
     /* Rota Inicial */
     openApi.get("/", (req, res, next) => {
