@@ -125,6 +125,37 @@ const signup = (req, res, next) => {
 /* Autenticação de usuário / Login */
 const login = (req, res, next) => {
 
+    /* Pega as informações do usuário */
+    const email = req.body.email || "";
+    const password = req.body.password || "";
+
+    /* Criptografa a senha */
+    const cipher = crypto.createCipher(process.env.CRYPTO_ALG, process.env.CRYPTO_SECRET);
+    cipher.update(password);
+    const passwordHash = cipher.final("hex");
+
+    /* Procura o usuário */
+    User.findOne({ email: email }, (err, user) => {
+
+        /* Verifica se existe algum error */
+        if (err) {
+            return res.status(503).json(err);
+        }
+
+        /* Verifica se as senha são iguais */
+        if (passwordHash === user.password) {
+
+            /* Cria o Token do usuário */
+            const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
+            const { _id, name, email, salary, imgUrl } = user;
+            return res.status(200).json({ _id, name, email, salary, imgUrl, token });
+
+        } else {
+            return res.status(503).json({ errorMsg: "Email ou Senha inválidos" });
+        }
+
+    });
+
 }
 
 /* Atualização de usuário */
@@ -212,8 +243,28 @@ const deleteUser = (req, res, next) => {
     });
 }
 
+/* Valida o Token do usuário */
+const validateToken = (req, res, next) => {
+    /* Pega a informação do Token */
+    const token = req.body.token || ""; 
+
+    /* Verifica o token */
+    jwt.verify(token, process.env.AUTH_SECRET, function(err, decoded) {
+        return res.status(200).json({ valid: !err });
+    });
+}
+
 /* Exporta os Controllers para as rotas */
-module.exports = { getUsers, getUserById, signup, login, updateUserSimple, updateUserAdvanced, deleteUser }
+module.exports = { 
+    getUsers,
+    getUserById, 
+    signup,
+    login, 
+    updateUserSimple,
+    updateUserAdvanced, 
+    deleteUser,
+    validateToken
+}
 
 /* ========================= Importante ========================= */
 
