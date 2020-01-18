@@ -30,6 +30,7 @@ module.exports = (server) => {
     /* Abertas */
     openApi.post("/signup", UserCtrl.signup);
     openApi.post("/login", UserCtrl.login);
+    openApi.post("/validateToken", UserCtrl.validateToken);
 
     /* Fechadas */
     api.get("/users", UserCtrl.getUsers);
