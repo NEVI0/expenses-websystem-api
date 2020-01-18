@@ -250,7 +250,11 @@ const validateToken = (req, res, next) => {
 
     /* Verifica o token */
     jwt.verify(token, process.env.AUTH_SECRET, function(err, decoded) {
-        return res.status(200).json({ valid: !err });
+        if (err) {
+            return res.status(503).json({ valid: false });
+        } else {
+            return res.status(200).json({ valid: true });
+        }
     });
 }
 
