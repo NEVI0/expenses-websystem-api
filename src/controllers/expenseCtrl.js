@@ -125,6 +125,31 @@ const deleteExpense = (req, res, next) => {
     });
 }
 
+/* Busca uma Despesa / Middleware de pesquisa do usuário */
+const search = (req, res, next) => {
+
+    /* Pega a informção enviada */
+    const data = req.body.tag || "";
+
+    /* Verifica se tag tem conteudo */
+    if (data == "" || data == null) {
+        return res.status(200).json({ msg: "Nada encontrado!" });
+    } 
+    
+    /* Transforma o valor em UpperCase */
+    const tag = data.toUpperCase();
+
+    /* Busca a informção no banco */
+    Expenses.find({ tags: new RegExp(tag) }, (err, resp) => {
+        if (err) {
+            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+        } else {
+            return res.status(200).json(resp); /* 2 - Senão uma mensagem de sucess */
+        }
+    });
+
+}
+
 /* Exporta os Controllers para as rotas */
 module.exports = { 
     getLastTen,
@@ -133,5 +158,6 @@ module.exports = {
     getDataController,
     insertExpense,
     updateExpense,
-    deleteExpense
+    deleteExpense,
+    search
 }
