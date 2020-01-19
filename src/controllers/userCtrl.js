@@ -133,18 +133,23 @@ const login = (req, res, next) => {
     const cipher = crypto.createCipher(process.env.CRYPTO_ALG, process.env.CRYPTO_SECRET);
     cipher.update(password);
     const passwordHash = cipher.final("hex");
-
+    
     /* Procura o usuário */
     User.findOne({ email: email }, (err, user) => {
-
+        
         /* Verifica se existe algum error */
         if (err) {
             return res.status(503).json(err);
         }
 
+        /* Verifica se o usuário existe */
+        if (!user) {
+            return res.status(503).json({ errorMsg: "O usuário não existe" });
+        }   
+        
         /* Verifica se as senha são iguais */
         if (passwordHash === user.password) {
-
+            
             /* Cria o Token do usuário */
             const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
             const { _id, name, email, salary, imgUrl } = user;
