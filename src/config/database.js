@@ -17,4 +17,4 @@ module.exports = mongoose.connect(process.env.URI_MONGO, {
 
 /* ================ IMPORTANTE ================ */
 /* Troque process.env.URI_MONGO para mongodb://localhost:27017/expenses_websystem */
-/* Paara poder usar o MongoDb localmente (localhost) */
+/* Para poder usar o MongoDb localmente (localhost) */
