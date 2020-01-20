@@ -11,7 +11,7 @@ const Expenses = mongoose.model("Expense");
 const getLastTen = (req, res, next) => {
     Expenses.find({ userId: req.params.userId }, (err, resp) => {
         if (err) {
-            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
         }
@@ -22,11 +22,22 @@ const getLastTen = (req, res, next) => {
 const getExpenses = (req, res, next) => {
     Expenses.find((err, resp) => {
         if (err) {
-            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
         }
     });
+}
+
+/* Busca somente uma Despesa pelo ID */
+const getExpenseById = (req, res, next) => {
+	Expenses.findById(req.params.id, (err, resp) => {
+		if (err) {
+            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
+        } else {
+            return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
+        }
+	});
 }
 
 /* Busca todas das Despesas pelo ID do Usuário */
@@ -35,7 +46,7 @@ const getExpensesByUserId = (req, res, next) => {
     /* Solução temporária */
     Expenses.find({ userId: req.params.userId }, (err, resp) => {
         if (err) {
-            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
         }
@@ -50,7 +61,7 @@ const getExpensesByUserId = (req, res, next) => {
     //     page, limit: 10, sort: { _id: -1 }
     // }, (err, resp) => {
     //     if (err) {
-    //         return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+    //         return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
     //     } else {
     //         return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
     //     }
@@ -63,7 +74,7 @@ const getDataController = (req, res, next) => {
         
         /* Se houver algum error, o retorna */
         if (err) {
-            return res.status(503).json(err); 
+            return res.status(500).json(err); 
         }
 
         /* Variavel que armazena a soma dos valores */
@@ -96,7 +107,7 @@ const getDataController = (req, res, next) => {
 const insertExpense = (req, res, next) => {
     Expenses.create(req.body, (err, resp) => {
         if (err) {
-            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna a despesa cadastrada */
         }
@@ -107,7 +118,7 @@ const insertExpense = (req, res, next) => {
 const updateExpense = (req, res, next) => {
     Expenses.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err, resp) => {
         if (err) {
-            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna a despesa atualizada */
         }
@@ -118,7 +129,7 @@ const updateExpense = (req, res, next) => {
 const deleteExpense = (req, res, next) => {
     Expenses.findByIdAndDelete(req.params.id, (err, resp) => {
         if (err) {
-            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json({ msg: "Despesa deletada com sucesso" }); /* 2 - Senão uma mensagem de sucess */
         }
@@ -142,7 +153,7 @@ const search = (req, res, next) => {
     /* Busca a informção no banco */
     Expenses.find({ tags: new RegExp(tag) }, (err, resp) => {
         if (err) {
-            return res.status(503).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão uma mensagem de sucess */
         }
@@ -153,7 +164,8 @@ const search = (req, res, next) => {
 /* Exporta os Controllers para as rotas */
 module.exports = { 
     getLastTen,
-    getExpenses,
+	getExpenses,
+	getExpenseById,
     getExpensesByUserId,
     getDataController,
     insertExpense,
