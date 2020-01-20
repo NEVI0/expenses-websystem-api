@@ -2,15 +2,7 @@
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate");
 
-/* Schema / Model de Expenses */
-// const expensesSchema = new mongoose.Schema({
-//     name: { type: String, required: true },
-//     value: { type: Number, required: true },
-//     description: { type: String, required: true },
-//     createdAt: { type: String, required: true },
-//     userId: { type: String, required: true }
-// });
-
+/* Schema das Despesas */
 const expensesSchema = new mongoose.Schema({
     name: { 
         type: String, required: true
