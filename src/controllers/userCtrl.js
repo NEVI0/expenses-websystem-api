@@ -12,6 +12,8 @@ const jwt = require("jsonwebtoken");
 /* Traz os Schemas / Models */
 require("../models/User");
 const User = mongoose.model("User");
+require("../models/Expenses");
+const Expenses = mongoose.model("Expense");
 
 /* Padrão para o email e senha */
 const emailRegex = /\S+@\S+\.\S+/;
@@ -227,10 +229,16 @@ const updateUserAdvanced = (req, res, next) => {
 const deleteUser = (req, res, next) => {
     User.findByIdAndDelete(req.params.id, (err, resp) => {
         if (err) {
-            return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
-        } else {
-            return res.status(200).json({ msg: "Usuário deletado com sucesso." }); /* 2 - Senão retorna o usuário */
-        }
+            return res.status(404).json(err); /* Se houver algum error, o retorna */
+		} 
+		
+		Expenses.deleteMany({ userId: req.params.id }, (err) => {
+			if (err) {
+				return res.status(404).json(err); /* Se houver algum error, o retorna */
+			} else {
+				return res.status(200).json({ msg: "Usuário deletado com sucesso." });
+			}
+		});		
     });
 }
 
