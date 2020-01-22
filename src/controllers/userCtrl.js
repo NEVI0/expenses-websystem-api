@@ -20,13 +20,14 @@ const passwordRegex = /((?=.*[a-z])(?=.*[A-Z]).{7})/;
 /* Habilita as variaveis de ambiente */
 require("dotenv").config();
 
+
 /* ===================== Controllers ===================== */
 
 /* Busca todos os usuários */
 const getUsers = (req, res, next) => {
     User.find((err, resp) => {        
         if (err) {
-            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna o usuário */
         }
@@ -37,7 +38,7 @@ const getUsers = (req, res, next) => {
 const getUserById = (req, res, next) => {
     User.findById(req.params.id, (err, resp) => {
         if (err) {
-            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna o usuário */
         }
@@ -81,7 +82,7 @@ const signup = (req, res, next) => {
 
         /* Se houver algum error, o retorna */
         if (err) {
-            return res.status(500).json(err);
+            return res.status(404).json(err);
         }
 
         /* 1 - Se existir um usuário, retorna um error */
@@ -102,7 +103,7 @@ const signup = (req, res, next) => {
 
                 /* Se houver algum error, o retorna */
                 if (err) {
-                    return res.status(500).json(err);
+                    return res.status(404).json(err);
                 }
 
                 /* Cria o Token */
@@ -139,12 +140,12 @@ const login = (req, res, next) => {
         
         /* Verifica se existe algum error */
         if (err) {
-            return res.status(500).json(err);
+            return res.status(404).json(err);
         }
 
         /* Verifica se o usuário existe */
         if (!user) {
-            return res.status(500).json({ errorMsg: "O usuário não existe" });
+            return res.status(404).json({ errorMsg: "O usuário não existe" });
         }   
         
         /* Verifica se as senha são iguais */
@@ -156,7 +157,7 @@ const login = (req, res, next) => {
             return res.status(200).json({ _id, name, email, salary, imgUrl, token });
 
         } else {
-            return res.status(500).json({ errorMsg: "Email ou Senha inválidos" });
+            return res.status(404).json({ errorMsg: "Email ou Senha inválidos" });
         }
 
     });
@@ -171,7 +172,7 @@ const updateUserSimple = (req, res, next) => {
 
         /* Se houver algum error, o retorna */
         if (err) {
-            return res.status(500).json(err);
+            return res.status(404).json(err);
         }
 
         /* 1 - Se existir um usuário, retorna um error */
@@ -182,7 +183,7 @@ const updateUserSimple = (req, res, next) => {
 
             User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err , resp) => {
                 if (err) {
-                    return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
+                    return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
                 } else {
                     return res.status(200).json(resp); /* 2 - Senão retorna os dados do usuário */
                 }
@@ -229,7 +230,7 @@ const updateUserAdvanced = (req, res, next) => {
         password: passwordHash
     }, { new: true }, (err, resp) => {
         if (err) {
-            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json(resp); /* 2 - Senão retorna os dados do usuário */
         }
@@ -241,7 +242,7 @@ const updateUserAdvanced = (req, res, next) => {
 const deleteUser = (req, res, next) => {
     User.findByIdAndDelete(req.params.id, (err, resp) => {
         if (err) {
-            return res.status(500).json(err); /* 1 - Se houver algum error, o retorna */
+            return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
         } else {
             return res.status(200).json({ msg: "Usuário deletado com sucesso." }); /* 2 - Senão retorna o usuário */
         }
@@ -256,7 +257,7 @@ const validateToken = (req, res, next) => {
     /* Verifica o token */
     jwt.verify(token, process.env.AUTH_SECRET, function(err, decoded) {
         if (err) {
-            return res.status(500).json({ valid: false });
+            return res.status(404).json({ valid: false });
         } else {
             return res.status(200).json({ valid: true });
         }
