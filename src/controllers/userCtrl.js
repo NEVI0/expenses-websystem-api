@@ -165,33 +165,15 @@ const login = (req, res, next) => {
 
 /* Atualização de usuário */
 const updateUserSimple = (req, res, next) => {
-
-    /* Busca no banco um usuário existente */
-    User.findOne({ email: req.body.email }, (err, user) => {
-
-        /* Se houver algum error, o retorna */
-        if (err) {
-            return res.status(404).json(err);
-        }
-
-        /* 1 - Se existir um usuário, retorna um error */
-        /* 2 - Cria um novo usuário */
-        if (user) {
-            return res.status(400).json({ errorMsg: "O Email já está cadastrado" });
-        } else {
-
-            User.findByIdAndUpdate(req.params.id, req.body, { new: true }, (err , resp) => {
-                if (err) {
-                    return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
-                } else {
-                    return res.status(200).json(resp); /* 2 - Senão retorna os dados do usuário */
-                }
-            });
-
-        }
-
-    });
-
+	User.findByIdAndUpdate(req.params.id, req.body, { 
+		new: true 
+	}, (err , resp) => {
+		if (err) {
+			return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+		} else {
+			return res.status(200).json(resp); /* 2 - Senão retorna os dados do usuário */
+		}
+	});
 }
 
 /* Atualização de usuário */
