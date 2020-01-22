@@ -167,12 +167,16 @@ const login = (req, res, next) => {
 const updateUserSimple = (req, res, next) => {
 	User.findByIdAndUpdate(req.params.id, req.body, { 
 		new: true 
-	}, (err , resp) => {
+	}, (err , user) => {
 		if (err) {
-			return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
-		} else {
-			return res.status(200).json(resp); /* 2 - Senão retorna os dados do usuário */
+			return res.status(404).json(err); /* Se houver algum error, o retorna */
 		}
+		
+		/* Cria o Token do usuário */
+		const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
+		const { _id, name, email, salary, imgUrl } = user;
+		return res.status(200).json({ _id, name, email, salary, imgUrl, token });
+
 	});
 }
 
