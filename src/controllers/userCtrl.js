@@ -53,23 +53,22 @@ const signup = (req, res, next) => {
     const email = req.body.email || "";
     const password = req.body.password || "";
     const confPassword = req.body.conf_password || "";
-    const salary = req.body.salary || "";
 
     /* Verifica se o email está correto */
     if (!emailRegex.test(email)) {
-        return res.status(400).json({ errorMsg: "O E-mail está incorreto." });
+        return res.status(404).json({ errorMsg: "O E-mail está incorreto." });
     }
 
     /* Verifica se a senha está correta */
     if (!passwordRegex.test(password)) {
-        return res.status(400).json({
+        return res.status(404).json({
             errorMsg: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
         });
     }
 
     /* Verifica se as senha são iguais */
     if (password !== confPassword) {
-        return res.status(400).json({ errorMsg: "As Senhas não são iguais." });
+        return res.status(404).json({ errorMsg: "As Senhas não são iguais." });
     }
 
     /* Criptografa a senha */
@@ -88,7 +87,7 @@ const signup = (req, res, next) => {
         /* 1 - Se existir um usuário, retorna um error */
         /* 2 - Cria um novo usuário */
         if (user) {
-            return res.status(400).json({ errorMsg: "O Usuário já existe." });
+            return res.status(404).json({ errorMsg: "O Usuário já existe." });
         } else {
 
             /* Cria um usuário */
@@ -96,7 +95,7 @@ const signup = (req, res, next) => {
                 name: name,
                 email: email,
                 password: passwordHash,
-                salary: salary,
+                salary: 1000,
                 imgName: "376574365784-imagem.png",
                 imgUrl: "https://amazon-s3.com/debbuing"
             }, (err, resp) => {

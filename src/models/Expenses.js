@@ -22,9 +22,6 @@ const expensesSchema = new mongoose.Schema({
     userId: { 
         type: String, required: true 
     },
-    userData: { 
-        type: Array, required: true
-    },
     tags: {
         type: Array, required: true
     }
