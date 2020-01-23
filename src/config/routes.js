@@ -21,8 +21,12 @@ module.exports = (server) => {
     api.use(auth);
 
     /* Rota Inicial */
-    openApi.get("/", (req, res, next) => {
-        return res.status(200).send(`API's Running - Status: OK`);   
+    openApi.get("/", (req, res) => {
+		try {
+			return res.status(200).send(`API's Running - Status: OK`);   
+		} catch (err) {
+			return res.status(400).json(err);
+		}
     });
 
     /* =========== Rotas de Usuario =========== */
@@ -30,12 +34,13 @@ module.exports = (server) => {
     /* Abertas */
     openApi.post("/signup", UserCtrl.signup);
     openApi.post("/login", UserCtrl.login);
-    openApi.post("/validateToken", UserCtrl.validateToken);
-
+	openApi.post("/validateToken", UserCtrl.validateToken);
+	openApi.post("/recoveryPass", UserCtrl.recoveryPassword);
+	
     /* Fechadas */
     api.get("/users", UserCtrl.getUsers);
-    api.get("/user/:id", UserCtrl.getUserById);
-
+	api.get("/user/:id", UserCtrl.getUserById);
+	
     api.put("/userSimple/:id", UserCtrl.updateUserSimple);
     api.put("/userAdvanced/:id", UserCtrl.updateUserAdvanced);
 
@@ -47,10 +52,13 @@ module.exports = (server) => {
     api.get("/lastExpenses/:userId", ExpensesCtrl.getLastTen);
 	api.get("/expenses/:userId", ExpensesCtrl.getExpensesByUserId);
 	api.get("/expense/:id", ExpensesCtrl.getExpenseById);
-    api.get("/dataController/:userId", ExpensesCtrl.getDataController);
+	api.get("/dataController/:userId", ExpensesCtrl.getDataController);
+	
     api.post("/expenses", ExpensesCtrl.insertExpense);
-    api.post("/search", ExpensesCtrl.search);
-    api.put("/expenses/:id", ExpensesCtrl.updateExpense);
+	api.post("/search", ExpensesCtrl.search);
+	
+	api.put("/expenses/:id", ExpensesCtrl.updateExpense);
+	
     api.delete("/expenses/:id", ExpensesCtrl.deleteExpense);
 
 }
