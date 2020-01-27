@@ -1,9 +1,3 @@
-/* ========================= Importante ========================= */
-
-/**
- * Leia a mensagem no final do código
-**/
-
 /* Dependencias */
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
@@ -175,7 +169,7 @@ const login = async (req, res) => {
 }
 
 /* Atualização de usuário */
-const updateUserSimple = async (req, res) => {
+const updateUser = async (req, res) => {
     try {
         /* Atualiza os dados o usuário */
         await User.findByIdAndUpdate(req.params.id, req.body, { 
@@ -198,49 +192,117 @@ const updateUserSimple = async (req, res) => {
     }
 }
 
-/* Atualização de usuário */
-const updateUserAdvanced = async (req, res) => {
-    
-    /* Pega as informações do usuário */
-    const oldPassword = req.body.old_password || "";
-    const password = req.body.password || "";
-    const confPassword = req.body.conf_password || "";
-    
-    /* Verifica se a senha nova é diferente da antiga */
-    if (password === oldPassword) {
-        return res.status(400).json({ errorMsg: "A sua nova senha não pode ser igual a antiga." });
-    }
+/* Envio de email para recuperação de senha */
+const forgotPass = async (req, res) => {
+	
+	/* Pega a informação de email do usuário  */
+	const email = req.body.email || "";
+	
+	try {				
+		/* Busca o usuário no banco */
+		await User.findOne({ email }, (err, user) => {
+			
+			/* Se houver algum error, o retorna */
+			if (err) {
+				return res.status(400).json(err);
+			}
+			
+			/* Verifica se o usuário não existe */
+			if (!user) {
+				return res.status(400).json({ errorMsg: "O usuário não existe!" });
+			}
+			
+			/* Cria o token */
+			const token = jwt.sign({
+				email: user.email,
+				password: user.password
+			}, process.env.AUTH_SECRET, { expiresIn: 7200000 })
+			
+			/* Cria o transporter */
+			const transporter = nodeMailer.createTransport(mailConfig);
 
-    /* Verifica se a senha está correta */
-    if (!passwordRegex.test(password)) {
-        return res.status(400).json({
-            errorMsg: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
-        });
-    }
+			/* Envia o email */
+			transporter.sendMail({
+				to: email,
+				from: `Minhas Despesas - Sistema Gerenciador <${process.env.MAIL_EMAIL}>`,
+				subject: "Recuperação de Senha",
+				html: `<p>Você esqueceu sua senha, não tem problema! Use esse token para redefini-lá: <br><br> Token: ${token}</p>`
+			}, err => {
+				if (err) {
+					return res.status(400).json(err);
+				} else {
+					return res.status(200).json({ msg: `Um email foi enviado para ${email}` });					
+				}
+			});
 
-    /* Verifica se as senha são iguais */
-    if (password !== confPassword) {
-        return res.status(400).json({ errorMsg: "As Senhas não são iguais." });
-    }
-
-    /* Faz a cryptografia da senha e coloca o hash na senha */
-    const salt = bcrypt.genSaltSync();
-    const passwordHash = bcrypt.hashSync(password, salt);
-
-    try {
-        /* Atualiza a Senha */
-        await User.findByIdAndUpdate(req.params.id, {
-            password: passwordHash
-        }, { new: true }, (err, resp) => {
-            if (err) {
-                return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
-            } else {
-                return res.status(200).json(resp); /* 2 - Senão retorna os dados do usuário */
-            }
-        });
+		});
     } catch (err) {
         return res.status(400).json(err);
     }
+
+}
+
+/* Redefinição de senha do usuário */
+const resetPass = async (req, res) => {
+	
+	/* Pega as informções do usuário */
+	const { email, password, token } = req.body;
+
+	try {
+
+		/* Pega o valor contido no token */
+		const tokenValues = jwt.verify(token, process.env.AUTH_SECRET);
+
+		await User.findOne({ email }, (err, user) => {
+
+			/* Verifica se existe algum error */
+			if (err) {
+				return res.status(400).json(err);
+			}
+
+			/* Verifica se o usuário existe */
+			if (!user) {
+				return res.status(400).json({ errorMsg: "O usuário não existe" });
+			}			
+
+			/* Verifica se a senha está fazia */
+			if (password == '' || password == null) {
+				return res.status(400).json({ errorMsg: "Você precisa informar a senha" });
+			}
+
+			/* Verifica se a senha está correta */
+			if (!passwordRegex.test(password)) {
+				return res.status(404).json({
+					errorMsg: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
+				});
+			}
+
+			/* Verifica se a senha é igual a antiga */
+			if (bcrypt.compareSync(password, tokenValues.password)) {
+				return res.status(400).json({ errorMsg: "A senha não pode ser igual a antiga" });
+			}
+
+			/* Criptografa a senha */
+			const salt = bcrypt.genSaltSync();
+    		const passwordHash = bcrypt.hashSync(password, salt);
+
+			/* Atualiza a senha do usuário */
+			user.updateOne({
+				password: passwordHash
+			}, (err, resp) => {
+				/* Verifica se existe algum error */
+				if (err) {
+					return res.status(400).json(err);
+				} else {
+					return res.status(200).json({ msg: "Sua senha foi atualizada com sucesso!" });
+				}
+			});
+
+		});
+
+	} catch (err) {
+		return res.status(400).json(err);
+	}
 
 }
 
@@ -287,76 +349,15 @@ const validateToken = async (req, res) => {
     }
 }
 
-/* Recuperação de senha */
-const recoveryPassword = (req, res) => {
-    try {
-        return res.status(200).json({ msg: "Dummy Text!" });
-    } catch (err) {
-        return res.status(400).json(err);
-    }
-	/* Pega o email */
-	// const email = req.body.email || "";
-
-	// /* Procura no banco o usuário pelo email */
-	// User.findOne({ email: email }, (err, user) => {
-
-	// 	/* Se tiver errors, retorna */
-	// 	if (err) {
-	// 		return res.status(404).json(err);
-	// 	}
-
-	// 	/* Verifica se o usuário não existe */
-	// 	if (!user) {
-	// 		return res.status(404).json({ errorMsg: "O usuário com este email não existe" });
-	// 	}
-
-	// 	/* Configura o email */
-	// 	const transporter = nodeMailer.createTransport(mailConfig);
-
-	// 	/* Envia o email */
-	// 	transporter.sendMail({
-	// 		from: `Minhas Despesas - Sistema Gerenciador de Despesas Pessoais <${process.env.MAIL_EMAIL}>`,
-	// 		to: email,
-	// 		subject: "Recuperação de Senha",
-	// 		text: `Sua senha é: ${user.password}`,
-	// 		html: `Sua senha é: ${user.password}`
-	// 	}, (err, info) => {
-	// 		if (err) {
-	// 			console.log(`Error: \n ${err}`);
-	// 		} else {
-	// 			console.log(`Information: \n ${info}`);
-	// 		}
-	// 	});
-		
-	// 	/* Envia uma mensagem de sucesso */
-	// 	return res.status(200).json({ msg: `Um email foi enviado para: ${email}` });
-
-	// });
-
-}
-
 /* Exporta os Controllers para as rotas */
 module.exports = { 
     getUsers,
     getUserById, 
     signup,
     login, 
-    updateUserSimple,
-    updateUserAdvanced, 
+    updateUser,
+	forgotPass, 
+	resetPass,
     deleteUser,
-	validateToken,
-	recoveryPassword
+	validateToken
 }
-
-/* ========================= Importante ========================= */
-
-/**
- * As duas funções de atualização de usuário são funções Simples e Avançadas.
- * A função simples é apenas um formulário no frontend que só poderá atualizar
- * o nome, email e salário (por enquanto).
- * 
- * Já a função avançada é um formúlario que tem 3 campos: A senha antiga, nova senha
- * e confirmação de senha. Decidi fazer isso pois nem sempre o usuário quer atualizar
- * todos os dados da sua conta, então vou fazer isso de formas separadas
- * 
-**/
