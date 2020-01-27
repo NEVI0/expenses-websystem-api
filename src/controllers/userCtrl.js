@@ -224,12 +224,12 @@ const forgotPass = async (req, res) => {
 			/* Envia o email */
 			transporter.sendMail({
 				to: email,
-				from: `Minhas Despesas - Sistema Gerenciador <${process.env.MAIL_EMAIL}>`,
+				from: `Minhas Despesas - Sistema Gerenciador <${process.env.MAIL_USER}>`,
 				subject: "Recuperação de Senha",
 				html: `<p>Você esqueceu sua senha, não tem problema! Use esse token para redefini-lá: <br><br> Token: ${token}</p>`
 			}, err => {
 				if (err) {
-					return res.status(400).json({ errorMsg: "Não foi possivel enviar o email", err });
+					return res.status(400).json(err);
 				} else {
 					return res.status(200).json({ msg: `Um email foi enviado para ${email}` });					
 				}
@@ -266,7 +266,7 @@ const resetPass = async (req, res) => {
 			}			
 
 			/* Verifica se a senha está fazia */
-			if (password == '' || password == null) {
+			if (password == "" || password == null) {
 				return res.status(400).json({ errorMsg: "Você precisa informar a senha" });
 			}
 
