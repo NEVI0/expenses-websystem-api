@@ -229,7 +229,7 @@ const forgotPass = async (req, res) => {
 				html: `<p>Você esqueceu sua senha, não tem problema! Use esse token para redefini-lá: <br><br> Token: ${token}</p>`
 			}, err => {
 				if (err) {
-					return res.status(400).json(err);
+					return res.status(400).json({ errorMsg: "Não foi possivel enviar o email", err });
 				} else {
 					return res.status(200).json({ msg: `Um email foi enviado para ${email}` });					
 				}
