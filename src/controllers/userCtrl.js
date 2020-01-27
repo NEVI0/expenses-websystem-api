@@ -224,7 +224,7 @@ const forgotPass = async (req, res) => {
 			/* Envia o email */
 			transporter.sendMail({
 				to: email,
-				from: `Minhas Despesas - Sistema Gerenciador <${process.env.MAIL_USER}>`,
+				from: `Minhas Despesas - Sistema Gerenciador de Despesas Pessoais <${process.env.MAIL_USER}>`,
 				subject: "Recuperação de Senha",
 				html: `<p>Você esqueceu sua senha, não tem problema! Use esse token para redefini-lá: <br><br> Token: ${token}</p>`
 			}, err => {
