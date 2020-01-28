@@ -214,13 +214,16 @@ const forgotPass = async (req, res) => {
 				return res.status(400).json({ errorMsg: "O usuário não existe!" });
 			}
 			
-			/* Cria o token */
-			const token = jwt.sign({
+			/* Cria o token para redefinir a senha */
+			const key = jwt.sign({
 				email: user.email,
 				password: user.password
-			}, process.env.AUTH_SECRET, { expiresIn: 7200000 })
+			}, process.env.AUTH_SECRET, { expiresIn: 7200000 });
+
+			/* Cria o token para fazer a requisição */
+			const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
 			
-			mail.forgotPass(user.name, email, token, res);
+			mail.forgotPass(user.name, email, key, token, res);
 
 		});
     } catch (err) {

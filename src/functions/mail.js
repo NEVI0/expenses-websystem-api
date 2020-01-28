@@ -54,7 +54,7 @@ module.exports = {
 	},
 
 	/* Envia um email para o usuário para a redefinição de senha */
-	async forgotPass(user, email, token, res) {	
+	async forgotPass(user, email, key, token, res) {	
 		/* Cria o transporter para enviar o email */
 		const transporter = nodeMailer.createTransport(mailconfig);
 	
@@ -78,7 +78,7 @@ module.exports = {
 						<h1>Hey ${user}!</h1>
 	
 						<p>Você esqueceu sua senha, não tem problema! 
-							<a href="http://localhost:4200/reset-pass/${token}/${email}" target="_blank">Click Aqui</a> para redefini-lá!
+							<a href="http://localhost:4200/auth/${key}/${email}/${token}" target="_blank">Click Aqui</a> para redefini-lá!
 						</p>
 					</body>
 				</html>
