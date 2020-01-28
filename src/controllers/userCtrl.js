@@ -236,12 +236,12 @@ const forgotPass = async (req, res) => {
 const resetPass = async (req, res) => {
 	
 	/* Pega as informções do usuário */
-	const { email, password, token } = req.body;
+	const { email, password, key } = req.body;
 
 	try {
 
 		/* Pega o valor contido no token */
-		const tokenValues = jwt.verify(token, process.env.AUTH_SECRET);
+		const keyValues = jwt.verify(key, process.env.AUTH_SECRET);
 
 		await User.findOne({ email }, (err, user) => {
 
@@ -268,7 +268,7 @@ const resetPass = async (req, res) => {
 			}
 
 			/* Verifica se a senha é igual a antiga */
-			if (bcrypt.compareSync(password, tokenValues.password)) {
+			if (bcrypt.compareSync(password, keyValues.password)) {
 				return res.status(400).json({ errorMsg: "A senha não pode ser igual a antiga" });
 			}
 
