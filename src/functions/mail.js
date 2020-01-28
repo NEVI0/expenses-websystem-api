@@ -77,11 +77,9 @@ module.exports = {
 					<body>
 						<h1>Hey ${user}!</h1>
 	
-						<p>Você esqueceu sua senha, não tem problema! Use o token abaixo para redefini-lá.</p>
-	
-						<br>
-						
-						<p>Token: ${token}</p>
+						<p>Você esqueceu sua senha, não tem problema! 
+							<a href="http://localhost:4200/reset-pass/${token}/${email}" target="_blank">Click Aqui</a> para redefini-lá!
+						</p>
 					</body>
 				</html>
 			`
