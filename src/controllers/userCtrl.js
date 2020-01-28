@@ -2,7 +2,6 @@
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
-const nodeMailer = require("nodemailer");
 
 /* Traz os Schemas / Models */
 require("../models/User");
@@ -17,8 +16,8 @@ const passwordRegex = /((?=.*[a-z])(?=.*[A-Z]).{7})/;
 /* Habilita as variaveis de ambiente */
 require("dotenv").config();
 
-/* Traz as configurações do email */
-const mailConfig = require("../config/mailConfig");
+/* Traz a função de enviar email */
+const mail = require("../functions/mail");
 
 /* ===================== Controllers ===================== */
 
@@ -105,16 +104,19 @@ const signup = async (req, res) => {
                     salary: 1000,
                     imgName: "376574365784-imagem.png",
                     imgUrl: "https://amazon-s3.com/debbuing"
-                }, (err, resp) => {
+                }, (err, user) => {
 
                     /* Se houver algum error, o retorna */
                     if (err) {
                         return res.status(404).json(err);
                     }
 
+					/* Envia um email de boas vindas para o usuário */
+					mail.welcome(user.name, user.email, res);
+
                     /* Cria o Token e envia as informações do usuário para o client */
-                    const token = jwt.sign(resp.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
-                    const { _id, name, email, salary, imgName, imgUrl } = resp;
+                    const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
+                    const { _id, name, email, salary, imgName, imgUrl } = user;
                     return res.status(200).json({ _id, name, email, salary, imgName, imgUrl, token });
 
                 });
@@ -218,22 +220,7 @@ const forgotPass = async (req, res) => {
 				password: user.password
 			}, process.env.AUTH_SECRET, { expiresIn: 7200000 })
 			
-			/* Cria o transporter */
-			const transporter = nodeMailer.createTransport(mailConfig);
-
-			/* Envia o email */
-			transporter.sendMail({
-				to: email,
-				from: `Minhas Despesas - Sistema Gerenciador de Despesas Pessoais <${process.env.MAIL_USER}>`,
-				subject: "Recuperação de Senha",
-				html: `<p>Você esqueceu sua senha, não tem problema! Use esse token para redefini-lá: <br><br> Token: ${token}</p>`
-			}, err => {
-				if (err) {
-					return res.status(400).json(err);
-				} else {
-					return res.status(200).json({ msg: `Um email foi enviado para ${email}` });					
-				}
-			});
+			mail.forgotPass(user.name, email, token, res);
 
 		});
     } catch (err) {
