@@ -4,6 +4,9 @@ const nodeMailer = require("nodemailer");
 /* Configurações do NodeMailer */
 const mailconfig = require("../config/mailConfig");
 
+/* Habilita variaveis de ambiente */
+require("dotenv").config();
+
 /* Função para enviar email */
 module.exports = {
 
@@ -78,7 +81,7 @@ module.exports = {
 						<h1>Hey ${user}!</h1>
 	
 						<p>Você esqueceu sua senha, não tem problema! 
-							<a href="https://reset-user-password.netlify.com/auth/${key}/${email}/${token}" target="_blank">Click Aqui</a> para redefini-lá!
+							<a href="${process.env.RESET_PASS_URL}/auth/${key}/${email}/${token}" target="_blank">Click Aqui</a> para redefini-lá!
 						</p>
 					</body>
 				</html>
