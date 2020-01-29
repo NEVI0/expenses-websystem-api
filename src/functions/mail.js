@@ -78,7 +78,7 @@ module.exports = {
 						<h1>Hey ${user}!</h1>
 	
 						<p>Você esqueceu sua senha, não tem problema! 
-							<a href="http://localhost:4200/auth/${key}/${email}/${token}" target="_blank">Click Aqui</a> para redefini-lá!
+							<a href="https://reset-user-password.netlify.com/auth/${key}/${email}/${token}" target="_blank">Click Aqui</a> para redefini-lá!
 						</p>
 					</body>
 				</html>
