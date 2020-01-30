@@ -155,8 +155,11 @@ const deleteExpense = async (req, res) => {
 /* Busca uma Despesa / Middleware de pesquisa do usuário */
 const search = async (req, res) => {
 
+	/* Pega o id do usuário */
+	const id = req.params.userId;
+
     /* Pega a informção enviada */
-    const data = req.body.tag || "";
+	const data = req.query.tag;
 
     /* Verifica se tag tem conteudo */
     if (data == "" || data == null) {
@@ -164,11 +167,11 @@ const search = async (req, res) => {
     } 
     
     /* Transforma o valor em UpperCase */
-    const tag = data.toUpperCase();
-
+	const tag = data.toUpperCase();
+	
 	try {
 		/* Busca a informção no banco */
-		await Expenses.find({ tags: new RegExp(tag) }, (err, resp) => {
+		await Expenses.find({ userId: id, tags: new RegExp(tag) }, (err, resp) => {
 			if (err) {
 				return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
 			} else {
