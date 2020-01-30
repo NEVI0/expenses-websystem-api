@@ -54,9 +54,9 @@ module.exports = (server) => {
 	api.get("/expenses/:userId", ExpensesCtrl.getExpensesByUserId);
 	api.get("/expense/:id", ExpensesCtrl.getExpenseById);
 	api.get("/dataController/:userId", ExpensesCtrl.getDataController);
+	api.get("/search/:userId", ExpensesCtrl.search);
 	
     api.post("/expenses", ExpensesCtrl.insertExpense);
-	api.post("/search", ExpensesCtrl.search);
 	
 	api.put("/expenses/:id", ExpensesCtrl.updateExpense);
 	
