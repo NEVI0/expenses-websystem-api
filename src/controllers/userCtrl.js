@@ -1,34 +1,34 @@
-/* Dependencias */
+/* Dependencies */
 const mongoose = require("mongoose");
 const jwt = require("jsonwebtoken");
 const bcrypt = require("bcrypt");
 
-/* Traz os Schemas / Models */
+/* Bring the Schemas / Models */
 require("../models/User");
 const User = mongoose.model("User");
 require("../models/Expenses");
 const Expenses = mongoose.model("Expense");
 
-/* Padrão para o email e senha */
+/* Email and Password Regex */
 const emailRegex = /\S+@\S+\.\S+/;
 const passwordRegex = /((?=.*[a-z])(?=.*[A-Z]).{7})/;
 
-/* Habilita as variaveis de ambiente */
+/* Enable the Config Vars */
 require("dotenv").config();
 
-/* Traz a função de enviar email */
+/* Bring the Email Functions */
 const mail = require("../functions/mail");
 
 /* ===================== Controllers ===================== */
 
-/* Busca todos os usuários */
+/* Get all the users */
 const getUsers = async (req, res) => {
     try {
-        await User.find((err, resp) => {        
+        await User.find((err, users) => {        
             if (err) {
-                return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+                return res.status(404).json(err); /* Return the Errors */
             } else {
-                return res.status(200).json(resp); /* 2 - Senão retorna o usuário */
+                return res.status(200).json(users); /* Return the Users */
             }
         });
     } catch (err) {
@@ -36,14 +36,14 @@ const getUsers = async (req, res) => {
     }
 }
 
-/* Busca dados do usuário pelo ID */
+/* Get an user bu OD */
 const getUserById = async (req, res) => {
     try {
-        await User.findById(req.params.id, (err, resp) => {
+        await User.findById(req.params.id, (err, user) => {
             if (err) {
-                return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+                return res.status(404).json(err); /* Return the Errors */
             } else {
-                return res.status(200).json(resp); /* 2 - Senão retorna o usuário */
+                return res.status(200).json(user); /* Return the User */
             }
         });
     } catch (err) {
@@ -51,52 +51,50 @@ const getUserById = async (req, res) => {
     }
 }
 
-/* Cria um usuário / Signup */
+/* Create a User / Signup */
 const signup = async (req, res) => {
 
-    /* Pega as informações do usuário */
+    /* Take the User Informations */
     const name = req.body.name || "";
     const email = req.body.email || "";
     const password = req.body.password || "";
     const confPassword = req.body.conf_password || "";
 
-    /* Verifica se o email está correto */
+    /* Verify if the email is correct */
     if (!emailRegex.test(email)) {
         return res.status(404).json({ errorMsg: "O E-mail está incorreto." });
     }
 
-    /* Verifica se a senha está correta */
+    /* Verify if the password is correct */
     if (!passwordRegex.test(password)) {
         return res.status(404).json({
             errorMsg: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
         });
     }
 
-    /* Verifica se as senha são iguais */
+    /* Verify if the passwords are equal */
     if (password !== confPassword) {
         return res.status(404).json({ errorMsg: "As Senhas não são iguais." });
     }
 
-    /* Faz a cryptografia da senha e coloca o hash na senha */
+    /* Make the password cryptografy */
     const salt = bcrypt.genSaltSync();
     const passwordHash = bcrypt.hashSync(password, salt);
 
     try {
-        /* Busca no banco um usuário existente */
         await User.findOne({ email: email }, (err, user) => {
 
-            /* Se houver algum error, o retorna */
+            /* Return the Errors */
             if (err) {
                 return res.status(404).json(err);
             }
 
-            /* 1 - Se existir um usuário, retorna um error */
-            /* 2 - Cria um novo usuário */
+            /* 1 - Verify if the user already exists */
+            /* 2 - Create a new user */
             if (user) {
                 return res.status(404).json({ errorMsg: "O Usuário já existe." });
             } else {
 
-                /* Cria um usuário */
                 User.create({
                     name: name,
                     email: email,
@@ -106,15 +104,15 @@ const signup = async (req, res) => {
                     imgUrl: "https://amazon-s3.com/debbuing"
                 }, (err, user) => {
 
-                    /* Se houver algum error, o retorna */
+                    /* Return the Errors */
                     if (err) {
                         return res.status(404).json(err);
                     }
 
-					/* Envia um email de boas vindas para o usuário */
+					/* Send a welcome email to the user */
 					mail.welcome(user.name, user.email, res);
 
-                    /* Cria o Token e envia as informações do usuário para o client */
+                    /* Create a token end send it to the client */
                     const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
                     const { _id, name, email, salary, imgName, imgUrl } = user;
                     return res.status(200).json({ _id, name, email, salary, imgName, imgUrl, token });
@@ -130,31 +128,30 @@ const signup = async (req, res) => {
 
 }
 
-/* Autenticação de usuário / Login */
+/* User Authentication / Login */
 const login = async (req, res) => {
 
-    /* Pega as informações do usuário */
+    /* Take the user Informations */
     const email = req.body.email || "";
     const password = req.body.password || "";
     
     try {
-        /* Procura o usuário */
         await User.findOne({ email: email }, (err, user) => {
             
-            /* Verifica se existe algum error */
+            /* Return the Errors */
             if (err) {
                 return res.status(404).json(err);
             }
 
-            /* Verifica se o usuário existe */
+            /* Verify if the user already exists */
             if (!user) {
                 return res.status(404).json({ errorMsg: "O usuário não existe" });
             }   
             
-            /* Verifica se as senha são iguais */
+            /* Verify is the passwords are equal */
             if (bcrypt.compareSync(password, user.password)) {
                 
-                /* Cria o Token do usuário e envia as informações para o cliente */
+                /* Create the token and send it to the client */
                 const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
                 const { _id, name, email, salary, imgUrl } = user;
                 return res.status(200).json({ _id, name, email, salary, imgUrl, token });
@@ -170,20 +167,19 @@ const login = async (req, res) => {
 
 }
 
-/* Atualização de usuário */
+/* update the user by ID */
 const updateUser = async (req, res) => {
     try {
-        /* Atualiza os dados o usuário */
+        /* Update the user Data */
         await User.findByIdAndUpdate(req.params.id, req.body, { 
             new: true 
         }, (err , user) => {
 
-            /* Se houver algum error, o retorna */
             if (err) {
-                return res.status(404).json(err);
+                return res.status(404).json(err); /* Return the Errors */
             }
             
-            /* Cria o Token do usuário e envia as informções para o client */
+            /* Create the token and send it to the client */
             const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
             const { _id, name, email, salary, imgUrl } = user;
             return res.status(200).json({ _id, name, email, salary, imgUrl, token });
@@ -194,35 +190,35 @@ const updateUser = async (req, res) => {
     }
 }
 
-/* Envio de email para recuperação de senha */
+/* Send a email to reset the user password */
 const forgotPass = async (req, res) => {
 	
-	/* Pega a informação de email do usuário  */
+	/* Take the user email Information  */
 	const email = req.body.email || "";
 	
 	try {				
-		/* Busca o usuário no banco */
 		await User.findOne({ email }, (err, user) => {
 			
-			/* Se houver algum error, o retorna */
+			/* Return the Errors */
 			if (err) {
 				return res.status(400).json(err);
 			}
 			
-			/* Verifica se o usuário não existe */
+			/* Verify if the user already exists */
 			if (!user) {
 				return res.status(400).json({ errorMsg: "O usuário não existe!" });
 			}
 			
-			/* Cria o token para redefinir a senha */
+			/* Create the token / key to reset the password */
 			const key = jwt.sign({
 				email: user.email,
 				password: user.password
 			}, process.env.AUTH_SECRET, { expiresIn: 7200000 });
 
-			/* Cria o token para fazer a requisição */
+			/* Create a token to enable the request */
 			const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
 			
+			/* Send the email to the user */
 			mail.forgotPass(user.name, email, key, token, res);
 
 		});
@@ -232,59 +228,58 @@ const forgotPass = async (req, res) => {
 
 }
 
-/* Redefinição de senha do usuário */
+/* Reset the user password */
 const resetPass = async (req, res) => {
 	
-	/* Pega as informções do usuário */
+	/* Take the user Informations */
 	const { email, password, key } = req.body;
 
 	try {
 
-		/* Pega o valor contido no token */
+		/* Taken the Token Values */
 		const keyValues = jwt.verify(key, process.env.AUTH_SECRET);
 
 		await User.findOne({ email }, (err, user) => {
 
-			/* Verifica se existe algum error */
+			/* Return the Errors */
 			if (err) {
 				return res.status(400).json(err);
 			}
 
-			/* Verifica se o usuário existe */
+			/* Verify if the user already exists */
 			if (!user) {
 				return res.status(400).json({ errorMsg: "O usuário não existe" });
 			}			
 
-			/* Verifica se a senha está fazia */
+			/* Verify if the password is empty */
 			if (password == "" || password == null) {
 				return res.status(400).json({ errorMsg: "Você precisa informar a senha" });
 			}
 
-			/* Verifica se a senha está correta */
+			/* Verify if the password is correct */
 			if (!passwordRegex.test(password)) {
 				return res.status(404).json({
 					errorMsg: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
 				});
 			}
 
-			/* Verifica se a senha é igual a antiga */
+			/* Verify if the password is the equal to the old one */
 			if (bcrypt.compareSync(password, keyValues.password)) {
 				return res.status(400).json({ errorMsg: "A senha não pode ser igual a antiga" });
 			}
 
-			/* Criptografa a senha */
+			/* Make the password cryptografy */
 			const salt = bcrypt.genSaltSync();
     		const passwordHash = bcrypt.hashSync(password, salt);
 
-			/* Atualiza a senha do usuário */
+			/* Update the user password */
 			user.updateOne({
 				password: passwordHash
-			}, (err, resp) => {
-				/* Verifica se existe algum error */
+			}, (err) => {
 				if (err) {
-					return res.status(400).json(err);
+					return res.status(400).json(err); /* Return the Errors */
 				} else {
-					return res.status(200).json({ msg: "Sua senha foi atualizada com sucesso!" });
+					return res.status(200).json({ msg: "Sua senha foi atualizada com sucesso!" }); /* Return a success message */
 				}
 			});
 
@@ -296,22 +291,20 @@ const resetPass = async (req, res) => {
 
 }
 
-/* Exclução de Usuário */
+/* Delete the user by ID */
 const deleteUser = async (req, res) => {
     try {
-        /* Deleta o usário */
         await User.findByIdAndDelete(req.params.id, (err, resp) => {
-            /* Se houver algum error, o retorna */
             if (err) {
-                return res.status(404).json(err); 
+                return res.status(404).json(err); /* Return the Errors */
             } 
             
-            /* Deleta todas as despesas do usuário */
+            /* Delete all user expenses */
             Expenses.deleteMany({ userId: req.params.id }, (err) => {
                 if (err) {
-                    return res.status(404).json(err); /* Se houver algum error, o retorna */
+                    return res.status(404).json(err); /* Return the Errors */
                 } else {
-                    return res.status(200).json({ msg: "Usuário deletado com sucesso." });
+                    return res.status(200).json({ msg: "Usuário deletado com sucesso." }); /* Return a success message */
                 }
             });		
         });
@@ -320,18 +313,18 @@ const deleteUser = async (req, res) => {
     }
 }
 
-/* Valida o Token do usuário */
+/* Validate the user Token */
 const validateToken = async (req, res) => {
-    /* Pega a informação do Token */
+    /* Take the token Information */
     const token = req.body.token || ""; 
 
     try {
-        /* Verifica o token */
-        await jwt.verify(token, process.env.AUTH_SECRET, function(err, decoded) {
+        /* Verify the Token */
+        await jwt.verify(token, process.env.AUTH_SECRET, function(err) {
             if (err) {
-                return res.status(404).json({ valid: false });
+                return res.status(404).json({ valid: false }); /* Return the status */
             } else {
-                return res.status(200).json({ valid: true });
+                return res.status(200).json({ valid: true }); /* Return the status */
             }
         });
     } catch (err) {
@@ -339,7 +332,7 @@ const validateToken = async (req, res) => {
     }
 }
 
-/* Exporta os Controllers para as rotas */
+/* Export the controller to the routes */
 module.exports = { 
     getUsers,
     getUserById, 

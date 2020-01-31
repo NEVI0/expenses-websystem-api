@@ -1,20 +1,20 @@
-/* Dependencias */
+/* Dependencies */
 const mongoose = require("mongoose");
 
-/* Traz os Schemas / Models */
+/* Bring the Schemas / Models */
 require("../models/Expenses");
 const Expenses = mongoose.model("Expense");
 
 /* ===================== Controllers ===================== */
 
-/* Busca as 10 ultimas Despesas */
+/* Get the last 10 expenses */
 const getLastTen = async (req, res) => {
     try {
 		await Expenses.find({ userId: req.params.userId }, (err, resp) => {
 			if (err) {
-				return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+				return res.status(404).json(err); /* Return the Errors */
 			} else {
-				return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
+				return res.status(200).json(resp); /* Return the Expenses */
 			}
 		}).sort({ _id: -1 }).limit(10);
 	} catch (err) {
@@ -22,14 +22,14 @@ const getLastTen = async (req, res) => {
 	}
 }
 
-/* Busca todas as Despesas */
+/* Get all expenses */
 const getExpenses = async (req, res) => {
 	try {
 		await Expenses.find((err, resp) => {
 			if (err) {
-				return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+				return res.status(404).json(err); /* Return the Errors */
 			} else {
-				return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
+				return res.status(200).json(resp); /* Return the Expenses */
 			}
 		});
 	} catch (err) {
@@ -37,14 +37,14 @@ const getExpenses = async (req, res) => {
 	}
 }
 
-/* Busca somente uma Despesa pelo ID */
+/* Get only one expenses by ID */
 const getExpenseById = async (req, res) => {
 	try {
 		await Expenses.findById(req.params.id, (err, resp) => {
 			if (err) {
-				return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+				return res.status(404).json(err); /* Return the Errors */
 			} else {
-				return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
+				return res.status(200).json(resp); /* Return the Expenses */
 			}
 		});
 	} catch (err) {
@@ -52,16 +52,16 @@ const getExpenseById = async (req, res) => {
 	}
 }
 
-/* Busca todas das Despesas pelo ID do Usuário */
+/* Get only the user expenses by his ID */
 const getExpensesByUserId = async (req, res) => {
 
 	/* Solução temporária */
 	try {
 		await Expenses.find({ userId: req.params.userId }, (err, resp) => {
 			if (err) {
-				return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+				return res.status(404).json(err); /* Return the Errors */
 			} else {
-				return res.status(200).json(resp); /* 2 - Senão retorna as Despesas */
+				return res.status(200).json(resp); /* Return the Expenses */
 			}
 		}).sort({ _id: -1 });
 	} catch (err) {
@@ -70,28 +70,28 @@ const getExpensesByUserId = async (req, res) => {
 
 }
 
-/* Faz o controle de dados para o usuário */
+/* User Data Controller */
 const getDataController = async (req, res) => {
 	try {
 		await Expenses.find({ userId: req.params.userId }, (err, resp) => {
 			
-			/* Se houver algum error, o retorna */
+			/* Return the Errors */
 			if (err) {
 				return res.status(404).json(err); 
 			}
 
-			/* Variavel que armazena a soma dos valores */
+			/* Variable that contains the sum of all values */
 			var values = 0;
 
-			/* Percorre o array de resposta e armazena os valores na variavel */
+			/* Take the values of all the expenses */
 			for (var i = 0; i < resp.length; i++) {
 				values += resp[i].value;
 			}
 
-			/* Faz a média de valores */
+			/* Make the AVG */
 			const avg = values / resp.length;
 
-			/* Retorna a soma de todos os valores */
+			/* Return the data */
 			return res.status(200).json({
 				success: true,
 				numberOfExpenses: resp.length,
@@ -105,14 +105,14 @@ const getDataController = async (req, res) => {
 	}
 }
 
-/* Inseri uma nova Despesa */
+/* Create a new expense */
 const insertExpense = async (req, res) => {
 	try {
 		await Expenses.create(req.body, (err, resp) => {
 			if (err) {
-				return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+				return res.status(404).json(err); /* Return the Errors */
 			} else {
-				return res.status(200).json(resp); /* 2 - Senão retorna a despesa cadastrada */
+				return res.status(200).json(resp); /* Return the Expense */
 			}
 		});
 	} catch (err) {
@@ -120,16 +120,16 @@ const insertExpense = async (req, res) => {
 	}
 }
 
-/* Atualiza uma Expencia pelo ID */
+/* Update an expense by ID */
 const updateExpense = async (req, res) => {
 	try {
 		await Expenses.findByIdAndUpdate(req.params.id, req.body, {
 			new: true
 		}, (err, resp) => {
 			if (err) {
-				return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+				return res.status(404).json(err); /* Return the Errors */
 			} else {
-				return res.status(200).json(resp); /* 2 - Senão retorna a despesa atualizada */
+				return res.status(200).json(resp); /* Return the Expense */
 			}
 		});
 	} catch (err) {
@@ -137,14 +137,14 @@ const updateExpense = async (req, res) => {
 	}
 }
 
-/* Deleta uma Expense pelo ID */
+/* Delete an expense by ID */
 const deleteExpense = async (req, res) => {
 	try {
 		await Expenses.findByIdAndDelete(req.params.id, (err, resp) => {
 			if (err) {
-				return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+				return res.status(404).json(err); /* Return the Errors */
 			} else {
-				return res.status(200).json({ msg: "Despesa deletada com sucesso" }); /* 2 - Senão uma mensagem de sucess */
+				return res.status(200).json({ msg: "Despesa deletada com sucesso" }); /* Return a success message */
 			}
 		});
 	} catch (err) {
@@ -152,30 +152,29 @@ const deleteExpense = async (req, res) => {
 	}
 }
 
-/* Busca uma Despesa / Middleware de pesquisa do usuário */
+/* Search for a expense */
 const search = async (req, res) => {
 
-	/* Pega o id do usuário */
+	/* Take the user ID */
 	const id = req.params.userId;
 
-    /* Pega a informção enviada */
+    /* Take the search information */
 	const data = req.query.tag;
 
-    /* Verifica se tag tem conteudo */
+    /* Verify if it has content */
     if (data == "" || data == null) {
         return res.status(200).json({ msg: "Nada encontrado!" });
     } 
     
-    /* Transforma o valor em UpperCase */
+    /* Transform the text to upper case */
 	const tag = data.toUpperCase();
 	
 	try {
-		/* Busca a informção no banco */
 		await Expenses.find({ userId: id, tags: new RegExp(tag) }, (err, resp) => {
 			if (err) {
-				return res.status(404).json(err); /* 1 - Se houver algum error, o retorna */
+				return res.status(404).json(err); /* Return the Errors */
 			} else {
-				return res.status(200).json(resp); /* 2 - Senão uma mensagem de sucess */
+				return res.status(200).json(resp); /* Return the Expenses */
 			}
 		});
 	} catch (err) {
@@ -184,7 +183,7 @@ const search = async (req, res) => {
 
 }
 
-/* Exporta os Controllers para as rotas */
+/* Export the Controllers to the rotas */
 module.exports = { 
     getLastTen,
 	getExpenses,
