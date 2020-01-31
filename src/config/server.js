@@ -1,28 +1,28 @@
-/* Dependencias */
+/* Dependencies */
 const express = require("express");
 const morgan = require("morgan");
 const bodyParser = require("body-parser");
 
-/* Habilita as Váriaveis de Ambiente */
+/* Enable the Config Vars */
 require("dotenv").config();
 
-/* Habilita o CORS da Aplicação */
+/* Enable the CORS at the Application */
 const allowCors = require("./cors");
 
-/* constante que contém o Servidor */
+/* Constant that contains the server */
 const server = express();
 
-/* Configurações do Servidor */
+/* Server Configurations */
 server.use(bodyParser.urlencoded({ extended: true }));
 server.use(bodyParser.json());
 server.use(allowCors);
 server.use(morgan("dev"));
 
-/* Constante que armazena a porta da Apliação */
+/* Constant that contains the application port */
 const port = process.env.PORT || 3100;
 
-/* Starta o Servidor */
+/* Init the server */
 server.listen(port, () => console.log(`Server's Running - Port: ${port}`));
 
-/* Exporta o servidor para o arquivo inicializador */
+/* Export the server to the initial file */
 module.exports = server;

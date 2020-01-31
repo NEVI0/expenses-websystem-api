@@ -1,26 +1,26 @@
-/* Dependencias */
+/* Dependencies */
 const express = require("express");
 
 /* Controllers */
 const ExpensesCtrl = require("../controllers/expenseCtrl");
 const UserCtrl = require("../controllers/userCtrl");
 
-/* Middleware que bloqueia as rotas */
+/* Middleware that block the routes */
 const auth = require("./auth");
 
-/* Exporta as Rotas para o arquivo Inicializador */
+/* Export the routes to the initial file */
 module.exports = (server) => {
 
-    /* Configura as Rotas Abertas */
+    /* Opened Routes Configuration */
     const openApi = express.Router();
     server.use("/oapi", openApi);
 
-    /* Configura as Rotas Fechadas */
+    /* Blocked Routes Configuration */
     const api = express.Router();
     server.use("/api", api);
     api.use(auth);
 
-    /* Rota Inicial */
+    /* Initial Route */
     openApi.get("/", (req, res) => {
 		try {
 			return res.status(200).send(`API's Running - Status: OK`);   
@@ -29,14 +29,14 @@ module.exports = (server) => {
 		}
     });
 
-    /* =========== Rotas de Usuario =========== */
+    /* =========== User Routes =========== */
 
-    /* Abertas */
+    /* Opened */
     openApi.post("/signup", UserCtrl.signup);
     openApi.post("/login", UserCtrl.login);
 	openApi.post("/validateToken", UserCtrl.validateToken);
 	
-    /* Fechadas */
+    /* Blocked */
     api.get("/users", UserCtrl.getUsers);
 	api.get("/user/:id", UserCtrl.getUserById);
 
@@ -47,7 +47,7 @@ module.exports = (server) => {
 
     api.delete("/user/:id", UserCtrl.deleteUser);
 
-    /* =========== Rotas de Despesas =========== */
+    /* =========== Expenses Routes =========== */
 
     api.get("/allExpenses", ExpensesCtrl.getExpenses);
     api.get("/lastExpenses/:userId", ExpensesCtrl.getLastTen);

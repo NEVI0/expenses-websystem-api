@@ -1,8 +1,8 @@
-/* Dependencias */
+/* Dependencies */
 const mongoose = require("mongoose");
 const mongoosePaginate = require("mongoose-paginate");
 
-/* Schema das Despesas */
+/* Expenses Schema / Model */
 const expensesSchema = new mongoose.Schema({
     name: { 
         type: String, required: true
@@ -27,8 +27,8 @@ const expensesSchema = new mongoose.Schema({
     }
 });
 
-/* Adiciona a paginação */
+/* Add a paginator */
 expensesSchema.plugin(mongoosePaginate);
 
-/* Exporta o Schema / Model */
+/* Export the Schema / Model */
 module.exports = mongoose.model("Expense", expensesSchema);

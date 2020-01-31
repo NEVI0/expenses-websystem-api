@@ -1,7 +1,7 @@
-/* Dependencia do Mongoose */
+/* Mongoose Dependencie */
 const mongoose = require("mongoose");
 
-/* Schema / Model de User */
+/* User Schema / Model */
 const userSchema = new mongoose.Schema({
     name: { type: String, required: true },
     email: { type: String, required: true },
@@ -11,5 +11,5 @@ const userSchema = new mongoose.Schema({
     imgUrl: { type: String }
 });
 
-/* Exporta o Schema / Model */
+/* Export the Schema / Model */
 module.exports = mongoose.model("User", userSchema);

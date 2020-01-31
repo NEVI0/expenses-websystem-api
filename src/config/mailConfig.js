@@ -1,7 +1,7 @@
-/* Habilita as variaveis de ambiente */
+/* Enable the Config Vars */
 require("dotenv").config();
 
-/* Exporta as configurações do Nodemailer */
+/* Export the Nodemailer Configurations */
 module.exports = {
     host: "smtp.mailtrap.io",
 	port: 2525,

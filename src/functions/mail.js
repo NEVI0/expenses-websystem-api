@@ -1,21 +1,21 @@
-/* Dependencias */
+/* Dependencies */
 const nodeMailer = require("nodemailer");
 
-/* Configurações do NodeMailer */
+/* Nodemailer Configurations */
 const mailconfig = require("../config/mailConfig");
 
-/* Habilita variaveis de ambiente */
+/* Enable the Config Vars */
 require("dotenv").config();
 
-/* Função para enviar email */
+/* Export the functions */
 module.exports = {
 
-	/* Envia um email de Boas Vindas para o usuário */
+	/* Send a welcome email to the user */
 	async welcome(user, email, res) {
-		/* Cria o transporter para enviar o email */
+		/* Create a transporter */
 		const transporter = nodeMailer.createTransport(mailconfig);
 	
-		/* Configurações para a mensagem */
+		/* Message Configuration */
 		const message = {
 			from: `Minhas Despesas - Sistema Gerenciador de Despesas Pessoais <nevio@test.com>`,
 			to: `${user} <${email}>`,
@@ -45,7 +45,7 @@ module.exports = {
 		};
 		
 		try {
-			/* Envia o email */
+			/* Send the Email */
 			await transporter.sendMail(message, (err, info) => {
 				if (err) {
 					return res.status(400).json(err);
@@ -56,12 +56,12 @@ module.exports = {
 		}
 	},
 
-	/* Envia um email para o usuário para a redefinição de senha */
+	/* Send a link to the user for him recovery his password */
 	async forgotPass(user, email, key, token, res) {	
-		/* Cria o transporter para enviar o email */
+		/* Create the Transporter */
 		const transporter = nodeMailer.createTransport(mailconfig);
 	
-		/* Configurações para a mensagem */
+		/* Message Configuration */
 		const message = {
 			from: `Minhas Despesas - Sistema Gerenciador de Despesas Pessoais <nevio@test.com>`,
 			to: `${user} <${email}>`,
@@ -89,7 +89,7 @@ module.exports = {
 		};
 		
 		try {
-			/* Envia o email */
+			/* Send the Email */
 			await transporter.sendMail(message, (err, info) => {
 				if (err) {
 					return res.status(400).json(err);

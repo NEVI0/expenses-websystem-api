@@ -1,10 +1,10 @@
-/* Dependencia do Mongoose */
+/* Mongoose Dependencie */
 const mongoose = require("mongoose");
 
-/* Habilita as Variaveis de Ambiente */
+/* Enable the Config Vars */
 require("dotenv").config();
 
-/* Exporta a Conexão para o arquivo inicializador */
+/* Export the connection to the initial file */
 module.exports = mongoose.connect(process.env.URI_MONGO, {
     useNewUrlParser: true,
     useUnifiedTopology: true,
@@ -15,6 +15,6 @@ module.exports = mongoose.connect(process.env.URI_MONGO, {
     console.log(`An Error Occured \n Error: ${err}`);
 });
 
-/* ================ IMPORTANTE ================ */
-/* Troque process.env.URI_MONGO para mongodb://localhost:27017/expenses_websystem */
-/* Para poder usar o MongoDb localmente (localhost) */
+/* ================ IMPORTANT ================ */
+/* Change process.env.URI_MONGO to mongodb://localhost:27017/expenses_websystem */
+/* to use the MongoDB in localhost */

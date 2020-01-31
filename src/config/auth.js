@@ -1,30 +1,30 @@
-/* Dependencia do JsonWebToken */
+/* JsonWebToken Dependencie */
 const jwt = require("jsonwebtoken");
 
-/* Habilita as viariaveis de ambiente */
+/* Enable the Config Vars */
 require("dotenv").config();
 
-/* Exporta a função middleware para bloaquear as rotas */
+/* Export the middleware that block the routes */
 module.exports = async (req, res, next) => {
 
-    /* Verifica se o preflight é OPTIONS */
+    /* Verify if this is an OPTIONS request */
     if (req.method == "OPTIONS") {
         next();
     } else {
 
-        /* Pega o Token */
+        /* Take the Token */
         const token = req.body.token || req.query.token || req.headers["authorization"];
 
-        /* Verifica se o token não existe */
+        /* Verify if the token exists */
         if (!token) {
             return res.status(403).json({ errorMsg: "No token Provided" });
         }
 
 		try {
-			/* Verifica o Token */
+			/* Verify the Token */
 			await jwt.verify(token, process.env.AUTH_SECRET, (err, decoded) => {
-				/* 1 - Retorna o error se houver algum */
-				/* 2 - Coloca o token a variavel decoed e chama o proximo middleware */
+				/* 1 - Return the Errors */
+				/* 2 - Call the next middleware */
 				if (err) {
 					return res.status(403).json({ errorMsg: "Failed to authenticate token" });
 				} else {
