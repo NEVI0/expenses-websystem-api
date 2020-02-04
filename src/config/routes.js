@@ -1,5 +1,6 @@
 /* Dependencies */
 const express = require("express");
+const multer = require("multer");
 
 /* Controllers */
 const ExpensesCtrl = require("../controllers/expenseCtrl");
@@ -7,6 +8,9 @@ const UserCtrl = require("../controllers/userCtrl");
 
 /* Middleware that block the routes */
 const auth = require("./auth");
+
+/* Multer Configuration */
+const multerConfig = require("./multerConfig");
 
 /* Export the routes to the initial file */
 module.exports = (server) => {
@@ -43,7 +47,7 @@ module.exports = (server) => {
 	api.post("/forgotPass", UserCtrl.forgotPass);
 	api.post("/resetPass", UserCtrl.resetPass);
 	
-    api.put("/user/:id", UserCtrl.updateUser);
+    api.put("/user/:id", multer(multerConfig).single("file"), UserCtrl.updateUser);
 
     api.delete("/user/:id", UserCtrl.deleteUser);
 
