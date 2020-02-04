@@ -7,12 +7,12 @@ const path = require("path");
 module.exports = {
 
     /* Send the file to tmp/uploads */
-    dest: path.resolve(__dirname, "..", "..", "tmp", "uploads"),
+    dest: path.resolve(__dirname, "..", "..", "uploads"),
     storage: multer.diskStorage({
 
         /* Send the file to tmp/uploads */
         destination: (req, file, callback) => {
-            callback(null, path.resolve(__dirname, "..", "..", "tmp", "uploads"));
+            callback(null, path.resolve(__dirname, "..", "..", "uploads"));
         }, 
 
         /* Add a hash to the file name */
