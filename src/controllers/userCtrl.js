@@ -16,8 +16,9 @@ const passwordRegex = /((?=.*[a-z])(?=.*[A-Z]).{7})/;
 /* Enable the Config Vars */
 require("dotenv").config();
 
-/* Bring the Email Functions */
+/* Bring the Functions */
 const mail = require("../functions/mail");
+const upload = require("../functions/uploadImage");
 
 /* ===================== Controllers ===================== */
 
@@ -100,8 +101,7 @@ const signup = async (req, res) => {
                     email: email,
                     password: passwordHash,
                     salary: 1000,
-                    imgName: "376574365784-imagem.png",
-                    imgUrl: "https://amazon-s3.com/debbuing"
+                    imgName: ""
                 }, (err, user) => {
 
                     /* Return the Errors */
@@ -114,8 +114,8 @@ const signup = async (req, res) => {
 
                     /* Create a token end send it to the client */
                     const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
-                    const { _id, name, email, salary, imgName, imgUrl } = user;
-                    return res.status(200).json({ _id, name, email, salary, imgName, imgUrl, token });
+                    const { _id, name, email, salary, imgName } = user;
+                    return res.status(200).json({ _id, name, email, salary, imgName, token });
 
                 });
 
@@ -153,8 +153,8 @@ const login = async (req, res) => {
                 
                 /* Create the token and send it to the client */
                 const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
-                const { _id, name, email, salary, imgUrl } = user;
-                return res.status(200).json({ _id, name, email, salary, imgUrl, token });
+                const { _id, name, email, salary, imgName } = user;
+                return res.status(200).json({ _id, name, email, salary, imgName, token });
 
             } else {
                 return res.status(404).json({ errorMsg: "Email ou Senha inválidos" });
@@ -170,6 +170,12 @@ const login = async (req, res) => {
 /* update the user by ID */
 const updateUser = async (req, res) => {
     try {
+
+		/* Verify if the image exists */
+		if (req.file) {
+			req.body.imgName = req.file.filename;
+		}
+
         /* Update the user Data */
         await User.findByIdAndUpdate(req.params.id, req.body, { 
             new: true 
@@ -177,12 +183,17 @@ const updateUser = async (req, res) => {
 
             if (err) {
                 return res.status(404).json(err); /* Return the Errors */
-            }
+			}
+			
+			/* Upload the image */
+			if (req.file) {
+				upload.uploadImageToFirebase(req.file);
+			}
             
             /* Create the token and send it to the client */
             const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
-            const { _id, name, email, salary, imgUrl } = user;
-            return res.status(200).json({ _id, name, email, salary, imgUrl, token });
+            const { _id, name, email, salary, imgName } = user;
+            return res.status(200).json({ _id, name, email, salary, imgName, token });
 
         });
     } catch (err) {
