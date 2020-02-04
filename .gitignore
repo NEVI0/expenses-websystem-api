@@ -1,6 +1,5 @@
 node_modules
 *.log
 .env
-tmp
-tmp/uploads
+tmp/updalods/*.*
 serviceAccountKey.json
