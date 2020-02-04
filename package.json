@@ -16,11 +16,15 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.1",
     "firebase-admin": "^8.9.2",
+    "gaxios": "^1.8.3",
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.8.4",
     "mongoose-paginate": "^5.0.3",
     "morgan": "^1.9.1",
     "multer": "^1.4.2",
     "nodemailer": "^6.4.2"
+  },
+  "resolutions": {
+    "**/gaxios": "1.8.3"
   }
 }
