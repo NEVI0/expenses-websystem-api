@@ -13,7 +13,7 @@ admin.initializeApp({
 });
 
 /* Bucket */
-const bucket = admin.storage().bucket();
+const bucket = admin.storage().bucket("expensesBucket");
 
 /* Enable the Config Vars */
 require("dotenv").config();
@@ -27,7 +27,7 @@ const uploadImageToFirebase = async (file) => {
 		}
 
 		/* Send the image to the firebase */
-		await bucket.upload(file.path).then(resp => {
+		await bucket.upload(file.path, { public: true }).then(resp => {
 			/* Remove the file from the project */
 			fs.unlink(file.path, err => console.log(`File System Error: ${err}`));			
 			return true;
