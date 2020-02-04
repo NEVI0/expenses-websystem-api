@@ -171,11 +171,6 @@ const login = async (req, res) => {
 const updateUser = async (req, res) => {
     try {
 
-		/* Verify if the image exists */
-		if (req.file) {
-			req.body.imgName = req.file.filename;
-		}
-
         /* Update the user Data */
         await User.findByIdAndUpdate(req.params.id, req.body, { 
             new: true 
@@ -184,12 +179,7 @@ const updateUser = async (req, res) => {
             if (err) {
                 return res.status(404).json(err); /* Return the Errors */
 			}
-			
-			/* Upload the image */
-			if (req.file) {
-				upload.uploadImageToFirebase(req.file);
-			}
-            
+			            
             /* Create the token and send it to the client */
             const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
             const { _id, name, email, salary, imgName } = user;
@@ -199,6 +189,39 @@ const updateUser = async (req, res) => {
     } catch (err) {
         return res.status(400).json(err);
     }
+}
+
+/* Update the User Image */
+const updateUserImage = async (req, res) => {
+	try {
+
+		/* Verify if the image exists */
+		if (!req.file) {
+			return res.status(400).json({ errorMsg: "Nenhuma imagem foi enviada!" });
+		}
+
+		/* Send the image to the Firebase */
+		upload.uploadImageToFirebase(req.file);
+		
+		await User.findByIdAndUpdate(req.params.id, {
+			imgName: req.file.filename
+		}, { new: true }, (err, user) => {
+
+			if (err) {
+                return res.status(404).json(err); /* Return the Errors */
+			}
+			            
+            /* Create the token and send it to the client */
+            const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
+            const { _id, name, email, salary, imgName } = user;
+			return res.status(200).json({ _id, name, email, salary, imgName, token });
+			
+		});
+
+
+	} catch (err) {
+		return res.status(400).json(err);
+	}
 }
 
 /* Send a email to reset the user password */
@@ -349,7 +372,8 @@ module.exports = {
     getUserById, 
     signup,
     login, 
-    updateUser,
+	updateUser,
+	updateUserImage,
 	forgotPass, 
 	resetPass,
     deleteUser,
