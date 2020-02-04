@@ -6,8 +6,8 @@ const fs = require("fs");
 admin.initializeApp({
 	credential: admin.credential.cert({
 		clientEmail: process.env.CLIENT_EMAIL,
-		privateKey: process.env.PRIVATE_KEY,
-		projectId: process.env.PROJECT_ID.replace(/\\n/g, '\n')
+		projectId: process.env.PROJECT_ID,
+		privateKey: process.env.PRIVATE_KEY.replace(/\\n/g, '\n')
 	}),
 	storageBucket: process.env.FB_BUCKET_NAME
 });
