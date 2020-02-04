@@ -14,7 +14,10 @@ To code, I've been using Node and MongoDB to do the Backend (API), and to do the
 * Create the Nodemail config :ballot_box_with_check:
 * Create a config to send email to the user :ballot_box_with_check:
 * Create functions to send email to the user :ballot_box_with_check:
-* Create the Multer config :x:
+* Create the Multer config :ballot_box_with_check:
+* Add the Multer Middleware in the Update User Route :ballot_box_with_check:
+* Add the Firebase Storage :ballot_box_with_check:
+* Make a function to send the user image to the firebase Storage :ballot_box_with_check:
 * Upgrade the API :x:
 
 # Important
