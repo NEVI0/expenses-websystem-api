@@ -202,7 +202,9 @@ const updateUserImage = async (req, res) => {
 
 		/* Send the image to the Firebase */
 		upload.uploadImageToFirebase(req.file);
-		
+		console.log("");
+		console.log(req.file); 
+		console.log("");
 		await User.findByIdAndUpdate(req.params.id, {
 			imgName: req.file.filename
 		}, { new: true }, (err, user) => {
