@@ -29,12 +29,10 @@ const uploadImageToFirebase = async (file) => {
 		/* Send the image to the firebase */
 		await bucket.upload(file.path).then(resp => {
 			/* Remove the file from the project */
-			console.log(resp);
 			fs.unlink(file.path, err => console.log(`File System Error: ${err}`));			
 			return true;
 		}).catch(error => {
 			/* Remove the file from the project */
-			console.log(`Bucket Error: ${error}`);
 			fs.unlink(file.path, err => console.log(`File System Error: ${err}`));
 			return false;
 		});
