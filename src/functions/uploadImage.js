@@ -7,7 +7,7 @@ admin.initializeApp({
 	credential: admin.credential.cert({
 		clientEmail: process.env.CLIENT_EMAIL,
 		privateKey: process.env.PRIVATE_KEY,
-		projectId: process.env.PROJECT_ID
+		projectId: process.env.PROJECT_ID.replace(/\\n/g, '\n')
 	}),
 	storageBucket: process.env.FB_BUCKET_NAME
 });
