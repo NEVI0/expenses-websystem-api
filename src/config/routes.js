@@ -47,7 +47,8 @@ module.exports = (server) => {
 	api.post("/forgotPass", UserCtrl.forgotPass);
 	api.post("/resetPass", UserCtrl.resetPass);
 	
-    api.put("/user/:id", multer(multerConfig).single("file"), UserCtrl.updateUser);
+	api.put("/user/:id", UserCtrl.updateUser);
+	api.put("/updateImage/:id", multer(multerConfig).single("file"), UserCtrl.updateUserImage)
 
     api.delete("/user/:id", UserCtrl.deleteUser);
 
