@@ -62,19 +62,19 @@ const signup = async (req, res) => {
 
     /* Verify if the email is correct */
     if (!emailRegex.test(email)) {
-        return res.status(404).json({ errorMsg: "O E-mail está incorreto." });
+        return res.status(404).json({ message: "O E-mail está incorreto." });
     }
 
     /* Verify if the password is correct */
     if (!passwordRegex.test(password)) {
         return res.status(404).json({
-            errorMsg: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
+            message: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
         });
     }
 
     /* Verify if the passwords are equal */
     if (password !== confPassword) {
-        return res.status(404).json({ errorMsg: "As Senhas não são iguais." });
+        return res.status(404).json({ message: "As senhas não são iguais." });
     }
 
     /* Make the password cryptografy */
@@ -92,7 +92,7 @@ const signup = async (req, res) => {
             /* 1 - Verify if the user already exists */
             /* 2 - Create a new user */
             if (user) {
-                return res.status(404).json({ errorMsg: "O Usuário já existe." });
+                return res.status(404).json({ message: "O Usuário já existe." });
             } else {
 
                 User.create({
@@ -100,7 +100,8 @@ const signup = async (req, res) => {
                     email: email,
                     password: passwordHash,
                     salary: 1000,
-                    imgName: ""
+					imgName: null,
+					imgUrl: null
                 }, (err, user) => {
 
                     /* Return the Errors */
@@ -113,8 +114,10 @@ const signup = async (req, res) => {
 
                     /* Create a token end send it to the client */
                     const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
-                    const { _id, name, email, salary, imgName } = user;
-                    return res.status(200).json({ _id, name, email, salary, imgName, token });
+                    const { _id, name, email, salary, imgName, imgUrl } = user;
+                    return res.status(200).json({ 
+						_id, name, email, salary, imgName, imgUrl, token
+					});
 
                 });
 
@@ -144,7 +147,7 @@ const login = async (req, res) => {
 
             /* Verify if the user already exists */
             if (!user) {
-                return res.status(404).json({ errorMsg: "O usuário não existe" });
+                return res.status(404).json({ message: "O usuário não existe" });
             }   
             
             /* Verify is the passwords are equal */
@@ -152,11 +155,13 @@ const login = async (req, res) => {
                 
                 /* Create the token and send it to the client */
                 const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
-                const { _id, name, email, salary, imgName } = user;
-                return res.status(200).json({ _id, name, email, salary, imgName, token });
+                const { _id, name, email, salary, imgName, imgUrl } = user;
+                return res.status(200).json({
+					_id, name, email, salary, imgName, imgUrl, token
+				});
 
             } else {
-                return res.status(404).json({ errorMsg: "Email ou Senha inválidos" });
+                return res.status(404).json({ message: "Email ou Senha inválidos" });
             }
 
         });
@@ -181,8 +186,10 @@ const updateUser = async (req, res) => {
 			            
             /* Create the token and send it to the client */
             const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
-            const { _id, name, email, salary, imgName } = user;
-            return res.status(200).json({ _id, name, email, salary, imgName, token });
+            const { _id, name, email, salary, imgName, imgUrl } = user;
+            return res.status(200).json({
+				_id, name, email, salary, imgName, imgUrl, token
+			});
 
         });
     } catch (err) {
@@ -206,7 +213,7 @@ const forgotPass = async (req, res) => {
 			
 			/* Verify if the user already exists */
 			if (!user) {
-				return res.status(400).json({ errorMsg: "O usuário não existe!" });
+				return res.status(400).json({ message: "O usuário não existe!" });
 			}
 			
 			/* Create the token / key to reset the password */
@@ -248,24 +255,24 @@ const resetPass = async (req, res) => {
 
 			/* Verify if the user already exists */
 			if (!user) {
-				return res.status(400).json({ errorMsg: "O usuário não existe" });
+				return res.status(400).json({ message: "O usuário não existe" });
 			}			
 
 			/* Verify if the password is empty */
 			if (password == "" || password == null) {
-				return res.status(400).json({ errorMsg: "Você precisa informar a senha" });
+				return res.status(400).json({ message: "Você precisa informar a senha" });
 			}
 
 			/* Verify if the password is correct */
 			if (!passwordRegex.test(password)) {
 				return res.status(404).json({
-					errorMsg: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
+					message: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
 				});
 			}
 
 			/* Verify if the password is the equal to the old one */
 			if (bcrypt.compareSync(password, keyValues.password)) {
-				return res.status(400).json({ errorMsg: "A senha não pode ser igual a antiga" });
+				return res.status(400).json({ message: "A senha não pode ser igual a antiga" });
 			}
 
 			/* Make the password cryptografy */
@@ -279,7 +286,7 @@ const resetPass = async (req, res) => {
 				if (err) {
 					return res.status(400).json(err); /* Return the Errors */
 				} else {
-					return res.status(200).json({ msg: "Sua senha foi atualizada com sucesso!" }); /* Return a success message */
+					return res.status(200).json({ message: "Sua senha foi atualizada com sucesso!" }); /* Return a success message */
 				}
 			});
 
@@ -304,7 +311,7 @@ const deleteUser = async (req, res) => {
                 if (err) {
                     return res.status(404).json(err); /* Return the Errors */
                 } else {
-                    return res.status(200).json({ msg: "Usuário deletado com sucesso." }); /* Return a success message */
+                    return res.status(200).json({ message: "Usuário deletado com sucesso." }); /* Return a success message */
                 }
             });		
         });

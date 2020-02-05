@@ -93,7 +93,7 @@ const forgotPass = async (user, email, key, token, res) => {
 			if (err) {
 				return res.status(400).json(err);
 			} else {
-				return res.status(200).json({ msg: `Um email foi enviado para ${email}` });
+				return res.status(200).json({ message: `Um email foi enviado para ${email}` });
 			}
 		});
 	} catch (err) {
