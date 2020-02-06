@@ -108,6 +108,18 @@ const getDataController = async (req, res) => {
 /* Create a new expense */
 const insertExpense = async (req, res) => {
 	try {
+		if (req.body.description == "" || null) {
+			req.body.description = "Sem Descrição"
+		}
+
+		if (req.body.name == "" || null) {
+			return res.status(404).json({ message: "O nome é obrigatório" });
+		}
+
+		if (req.body.value == "" || null) {
+			return res.status(404).json({ message: "O valor é obrigatório" });
+		}
+
 		await Expenses.create(req.body, (err, resp) => {
 			if (err) {
 				return res.status(404).json(err); /* Return the Errors */

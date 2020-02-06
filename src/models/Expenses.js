@@ -24,7 +24,10 @@ const expensesSchema = new mongoose.Schema({
     },
     tags: {
         type: Array, required: true
-    }
+	},
+	status: {
+		type: String, default: "PENDENTE"
+	}
 });
 
 /* Add a paginator */
