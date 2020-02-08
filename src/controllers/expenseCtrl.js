@@ -71,7 +71,7 @@ const getExpensesByUserId = async (req, res) => {
 }
 
 /* User Data Controller */
-const getDataController = async (req, res) => {
+const getDataController = async (req, res) => {		
 	try {
 		await Expenses.find({ userId: req.params.userId }, (err, resp) => {
 			
@@ -79,7 +79,7 @@ const getDataController = async (req, res) => {
 			if (err) {
 				return res.status(404).json(err); 
 			}
-
+			
 			/* Variable that contains the sum of all values */
 			var values = 0;
 
@@ -201,9 +201,9 @@ module.exports = {
 	getExpenses,
 	getExpenseById,
     getExpensesByUserId,
-    getDataController,
+	getDataController,
     insertExpense,
     updateExpense,
     deleteExpense,
-    search
+	search
 }
