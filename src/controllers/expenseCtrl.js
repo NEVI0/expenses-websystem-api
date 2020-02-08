@@ -105,6 +105,36 @@ const getDataController = async (req, res) => {
 	}
 }
 
+/* Get the sum of expenses by month */
+const getSumOfExpensesByMonth = async (req, res) => {
+	try {
+		/* MongoDB Aggregation */
+		await Expenses.aggregate([
+			{
+				"$match": {
+					userId: req.params.userId /* Select where the userId is equal to userId */
+				}
+			},
+			{
+				"$group": {
+					_id: { $month: "$createdAt" }, /* Month */
+					avg: { $avg: "$value" }, /* Avg of the values */
+					total: { $sum: 1 } /* Number of Expenses */
+				}
+			}
+		], (err, resp) => {
+			if (err) {
+				return res.status(400).json(err); /* Return the Errors */
+			} else {
+				return res.status(200).json(resp); /* Return the Aggregation */
+			}
+		});
+	} catch (err) {
+		return res.status(400).json(err);
+	}
+
+}
+
 /* Create a new expense */
 const insertExpense = async (req, res) => {
 	try {
@@ -202,6 +232,7 @@ module.exports = {
 	getExpenseById,
     getExpensesByUserId,
 	getDataController,
+	getSumOfExpensesByMonth,
     insertExpense,
     updateExpense,
     deleteExpense,
