@@ -105,8 +105,8 @@ const getDataController = async (req, res) => {
 	}
 }
 
-/* Get the sum of expenses by month */
-const getSumOfExpensesByMonth = async (req, res) => {
+/* Get the sum of expenses by month to the chart */
+const chartController = async (req, res) => {
 	try {
 		/* MongoDB Aggregation */
 		await Expenses.aggregate([
@@ -232,7 +232,7 @@ module.exports = {
 	getExpenseById,
     getExpensesByUserId,
 	getDataController,
-	getSumOfExpensesByMonth,
+	chartController,
     insertExpense,
     updateExpense,
     deleteExpense,
