@@ -35,12 +35,12 @@ module.exports = (server) => {
     openApi.post("/signup", UserCtrl.signup);
     openApi.post("/login", UserCtrl.login);
 	openApi.post("/validateToken", UserCtrl.validateToken);
+	openApi.post("/forgotPass", UserCtrl.forgotPass);
 	
     /* Blocked */
     api.get("/users", UserCtrl.getUsers);
 	api.get("/user/:id", UserCtrl.getUserById);
 
-	api.post("/forgotPass", UserCtrl.forgotPass);
 	api.post("/resetPass", UserCtrl.resetPass);
 	
 	api.put("/user/:id", UserCtrl.updateUser);
