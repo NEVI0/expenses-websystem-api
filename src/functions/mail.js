@@ -55,7 +55,7 @@ const welcome = async (user, email, res) => {
 }
 
 /* Send a link to the user for him recovery his password */
-const forgotPass = async (user, email, token, res) => {	
+const forgotPass = async (user, email, key, token, res) => {	
 
 	/* Create the Transporter */
 	const transporter = nodeMailer.createTransport(mailconfig);
@@ -80,7 +80,7 @@ const forgotPass = async (user, email, token, res) => {
 					<h1>Hey ${user}!</h1>
 
 					<p>Você esqueceu sua senha, não tem problema! 
-						<a href="${process.env.RESET_PASS_URL}/auth/${token}/${email}" target="_blank">Click Aqui</a> para redefini-lá!
+						<a href="${process.env.RESET_PASS_URL}/auth/${key}/${email}/${token}" target="_blank">Click Aqui</a> para redefini-lá!
 					</p>
 				</body>
 			</html>

@@ -218,13 +218,16 @@ const forgotPass = async (req, res) => {
 			}
 			
 			/* Create the token / key to reset the password */
-			const token = jwt.sign({
+			const key = jwt.sign({
 				email: user.email,
 				password: user.password
 			}, process.env.AUTH_SECRET, { expiresIn: 7200000 });
 
+			/* Create a token to allow the request */
+			const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
+
 			/* Send the email to the user */
-			mail.forgotPass(user.name, email, token, res);
+			mail.forgotPass(user.name, email, key, token, res);
 
 		});
     } catch (err) {
@@ -237,12 +240,12 @@ const forgotPass = async (req, res) => {
 const resetPass = async (req, res) => {
 	
 	/* Take the user Informations */
-	const { email, password, token } = req.body;
+	const { email, password, key } = req.body;
 
 	try {
 
 		/* Taken the Token Values */
-		const tokenValues = jwt.verify(token, process.env.AUTH_SECRET);
+		const keyValues = jwt.verify(key, process.env.AUTH_SECRET);
 
 		await User.findOne({ email }, (err, user) => {
 
@@ -269,7 +272,7 @@ const resetPass = async (req, res) => {
 			}
 
 			/* Verify if the password is the equal to the old one */
-			if (bcrypt.compareSync(password, tokenValues.password)) {
+			if (bcrypt.compareSync(password, keyValues.password)) {
 				return res.status(400).json({ message: "A senha não pode ser igual a antiga" });
 			}
 
