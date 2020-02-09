@@ -212,7 +212,13 @@ const search = async (req, res) => {
 	const tag = data.toUpperCase();
 	
 	try {
-		await Expenses.find({ userId: id, tags: new RegExp(tag) }, (err, resp) => {
+		await Expenses.find({
+			userId: id, 
+			$or: [
+				{ tags: new RegExp(tag) },
+				{ status: new RegExp(tag) }
+			]
+		}, (err, resp) => {
 			if (err) {
 				return res.status(404).json(err); /* Return the Errors */
 			} else {
