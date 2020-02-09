@@ -26,7 +26,7 @@ const getUsers = async (req, res) => {
     try {
         await User.find((err, users) => {        
             if (err) {
-                return res.status(404).json(err); /* Return the Errors */
+                return res.status(400).json(err); /* Return the Errors */
             } else {
                 return res.status(200).json(users); /* Return the Users */
             }
@@ -41,7 +41,7 @@ const getUserById = async (req, res) => {
     try {
         await User.findById(req.params.id, (err, user) => {
             if (err) {
-                return res.status(404).json(err); /* Return the Errors */
+                return res.status(400).json(err); /* Return the Errors */
             } else {
                 return res.status(200).json(user); /* Return the User */
             }
@@ -59,40 +59,41 @@ const signup = async (req, res) => {
     const email = req.body.email || "";
     const password = req.body.password || "";
     const confPassword = req.body.conf_password || "";
+	
+	try {
+		
+		/* Verify if the email is correct */
+		if (!emailRegex.test(email)) {
+			return res.status(400).json({ message: "O E-mail está incorreto." });
+		}
 
-    /* Verify if the email is correct */
-    if (!emailRegex.test(email)) {
-        return res.status(404).json({ message: "O E-mail está incorreto." });
-    }
+		/* Verify if the password is correct */
+		if (!passwordRegex.test(password)) {
+			return res.status(400).json({
+				message: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
+			});
+		}
 
-    /* Verify if the password is correct */
-    if (!passwordRegex.test(password)) {
-        return res.status(404).json({
-            message: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
-        });
-    }
+		/* Verify if the passwords are equal */
+		if (password !== confPassword) {
+			return res.status(400).json({ message: "As senhas não são iguais." });
+		}
 
-    /* Verify if the passwords are equal */
-    if (password !== confPassword) {
-        return res.status(404).json({ message: "As senhas não são iguais." });
-    }
+		/* Make the password cryptografy */
+		const salt = bcrypt.genSaltSync();
+		const passwordHash = bcrypt.hashSync(password, salt);
 
-    /* Make the password cryptografy */
-    const salt = bcrypt.genSaltSync();
-    const passwordHash = bcrypt.hashSync(password, salt);
-
-    try {
         await User.findOne({ email: email }, (err, user) => {
 
             /* Return the Errors */
             if (err) {
-                return res.status(404).json(err);
+                return res.status(400).json(err);
             }
 
             /* 1 - Verify if the user already exists */
             /* 2 - Create a new user */
             if (user) {
-                return res.status(404).json({ message: "O Usuário já existe." });
+                return res.status(400).json({ message: "O Usuário já existe." });
             } else {
 
                 User.create({
@@ -106,7 +107,7 @@ const signup = async (req, res) => {
 
                     /* Return the Errors */
                     if (err) {
-                        return res.status(404).json(err);
+                        return res.status(400).json(err);
                     }
 
 					/* Send a welcome email to the user */
@@ -142,12 +143,12 @@ const login = async (req, res) => {
             
             /* Return the Errors */
             if (err) {
-                return res.status(404).json(err);
+                return res.status(400).json(err);
             }
 
             /* Verify if the user already exists */
             if (!user) {
-                return res.status(404).json({ message: "O usuário não existe" });
+                return res.status(400).json({ message: "O usuário não existe" });
             }   
             
             /* Verify is the passwords are equal */
@@ -161,7 +162,7 @@ const login = async (req, res) => {
 				});
 
             } else {
-                return res.status(404).json({ message: "Email ou Senha inválidos" });
+                return res.status(400).json({ message: "Email ou Senha inválidos" });
             }
 
         });
@@ -181,7 +182,7 @@ const updateUser = async (req, res) => {
         }, (err , user) => {
 
             if (err) {
-                return res.status(404).json(err); /* Return the Errors */
+                return res.status(400).json(err); /* Return the Errors */
 			}
 			            
             /* Create the token and send it to the client */
@@ -217,16 +218,13 @@ const forgotPass = async (req, res) => {
 			}
 			
 			/* Create the token / key to reset the password */
-			const key = jwt.sign({
+			const token = jwt.sign({
 				email: user.email,
 				password: user.password
 			}, process.env.AUTH_SECRET, { expiresIn: 7200000 });
 
-			/* Create a token to enable the request */
-			const token = jwt.sign(user.toJSON(), process.env.AUTH_SECRET, { expiresIn: "1 day" });
-			
 			/* Send the email to the user */
-			mail.forgotPass(user.name, email, key, token, res);
+			mail.forgotPass(user.name, email, token, res);
 
 		});
     } catch (err) {
@@ -239,12 +237,12 @@ const forgotPass = async (req, res) => {
 const resetPass = async (req, res) => {
 	
 	/* Take the user Informations */
-	const { email, password, key } = req.body;
+	const { email, password, token } = req.body;
 
 	try {
 
 		/* Taken the Token Values */
-		const keyValues = jwt.verify(key, process.env.AUTH_SECRET);
+		const tokenValues = jwt.verify(token, process.env.AUTH_SECRET);
 
 		await User.findOne({ email }, (err, user) => {
 
@@ -265,13 +263,13 @@ const resetPass = async (req, res) => {
 
 			/* Verify if the password is correct */
 			if (!passwordRegex.test(password)) {
-				return res.status(404).json({
+				return res.status(400).json({
 					message: "A Senha deve ter: 1 letra em Maiúscula, 1 em Minúscula e ter mais de 7 Caracteres."
 				});
 			}
 
 			/* Verify if the password is the equal to the old one */
-			if (bcrypt.compareSync(password, keyValues.password)) {
+			if (bcrypt.compareSync(password, tokenValues.password)) {
 				return res.status(400).json({ message: "A senha não pode ser igual a antiga" });
 			}
 
@@ -282,7 +280,7 @@ const resetPass = async (req, res) => {
 			/* Update the user password */
 			user.updateOne({
 				password: passwordHash
-			}, (err) => {
+			}, err => {
 				if (err) {
 					return res.status(400).json(err); /* Return the Errors */
 				} else {
@@ -303,13 +301,13 @@ const deleteUser = async (req, res) => {
     try {
         await User.findByIdAndDelete(req.params.id, (err, resp) => {
             if (err) {
-                return res.status(404).json(err); /* Return the Errors */
+                return res.status(400).json(err); /* Return the Errors */
             } 
             
             /* Delete all user expenses */
             Expenses.deleteMany({ userId: req.params.id }, (err) => {
                 if (err) {
-                    return res.status(404).json(err); /* Return the Errors */
+                    return res.status(400).json(err); /* Return the Errors */
                 } else {
                     return res.status(200).json({ message: "Usuário deletado com sucesso." }); /* Return a success message */
                 }
@@ -329,7 +327,7 @@ const validateToken = async (req, res) => {
         /* Verify the Token */
         await jwt.verify(token, process.env.AUTH_SECRET, function(err) {
             if (err) {
-                return res.status(404).json({ valid: false }); /* Return the status */
+                return res.status(400).json({ valid: false }); /* Return the status */
             } else {
                 return res.status(200).json({ valid: true }); /* Return the status */
             }
