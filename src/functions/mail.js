@@ -30,6 +30,9 @@ const welcome = async (user, email, res) => {
 					.content { margin: 0 100px; padding: 15px; text-align: justify; }
 					.subContent { margin-top: 60px; text-align: center; }
 					.subContent a { text-decoration: none; color: #6200ea; outline: none;  }
+					@media only screen and (max-width: 397px) {
+						.content { margin: 0 15px; }
+					}
 				</style>
 			</head>
 			<body>
@@ -106,6 +109,9 @@ const forgotPass = async (user, email, key, token, res) => {
 						border: 1px solid #6200ea;
 					}
 					.button a:hover, .button a:focus { box-shadow: 1px 1px 13px 2px rgba(0, 0, 0, 0.5) }
+					@media only screen and (max-width: 397px) {
+						.content { margin: 0 15px; }
+					}
 				</style>
 			</head>
 			<body>
