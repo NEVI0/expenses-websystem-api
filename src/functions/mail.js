@@ -128,7 +128,7 @@ const forgotPass = async (user, email, key, token, res) => {
 			
 					<div class="subContent">
 						<small>Equipe de Programadores do sistema <em>
-						<a href="#" target="_blank">Minhas Despesas</a>
+						<a href="https://expenses-web-system.firebaseapp.com" target="_blank">Minhas Despesas</a>
 						</em></small>
 					</div>
 			
