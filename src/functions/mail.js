@@ -112,7 +112,7 @@ const forgotPass = async (user, email, key, token, res) => {
 				<div class="container">
 			
 					<div class="title">
-						<h2>Olá <b>Usuário</b>!</h2>
+						<h2>Olá <b>${user}</b>!</h2>
 					</div>
 			
 					<div class="content">
