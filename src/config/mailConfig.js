@@ -4,7 +4,7 @@ require("dotenv").config();
 /* Export the Nodemailer Configurations */
 module.exports = {
     host: "smtp.gmail.com",
-	port: 465,
+	port: 587,
 	secure: true,
 	auth: {
 		user: process.env.MAIL_USER,
