@@ -14,8 +14,9 @@ To code, I've been using Node and MongoDB to do the Backend (API), and to do the
 * Create the Nodemail config :ballot_box_with_check:
 * Create a config to send email to the user :ballot_box_with_check:
 * Create functions to send email to the user :ballot_box_with_check:
-* Upgrade the API :x:
+* Upgrade the API :ballot_box_with_check:
 
 # Important
 
+See the finel Result: [Minhas Despesas](https://expenses-web-system.firebaseapp.com "Project Endded")
 Node's Awesome!!! hushushushus
