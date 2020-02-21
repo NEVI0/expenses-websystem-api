@@ -330,7 +330,7 @@ const validateToken = async (req, res) => {
         /* Verify the Token */
         await jwt.verify(token, process.env.AUTH_SECRET, function(err) {
             if (err) {
-                return res.status(400).json({ valid: false }); /* Return the status */
+                return res.status(200).json({ valid: false }); /* Return the status */
             } else {
                 return res.status(200).json({ valid: true }); /* Return the status */
             }
