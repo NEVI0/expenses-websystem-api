@@ -18,5 +18,5 @@ To code, I've been using Node and MongoDB to do the Backend (API), and to do the
 
 # Important
 
-See the finel Result: [Minhas Despesas](https://expenses-web-system.firebaseapp.com "Project Endded")
+See the final Result: [Minhas Despesas](https://expenses-web-system.firebaseapp.com "Project Endded")
 Node's Awesome!!! hushushushus
