@@ -119,6 +119,7 @@ const chartController = async (req, res) => {
 				"$group": {
 					_id: { $month: "$createdAt" }, /* Month */
 					avg: { $avg: "$value" }, /* Avg of the values */
+					sum: { $sum: "$value" },
 					total: { $sum: 1 } /* Number of Expenses */
 				}
 			}
