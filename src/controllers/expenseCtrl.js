@@ -112,7 +112,8 @@ const chartController = async (req, res) => {
 		await Expenses.aggregate([
 			{
 				"$match": {
-					userId: req.params.userId /* Select where the userId is equal to userId */
+					userId: req.params.userId, /* Select where the userId is equal to userId */
+					status: "PAGO" /* And select just paied expenses */
 				}
 			},
 			{
