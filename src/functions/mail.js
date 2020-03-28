@@ -15,7 +15,7 @@ const welcome = async (user, email, res) => {
 
 	/* Message Configuration */
 	const message = {
-		from: `Minhas Despesas - Sistema Gerenciador de Despesas Pessoais <nevio@test.com>`,
+		from: `Despesas Net - Sistema Gerenciador de Despesas Pessoais <${process.env.MAIL_USER}>`,
 		to: `${user} <${email}>`,
 		subject: `Boas Vindas ao Sistema`,
 		html: `
@@ -81,7 +81,7 @@ const forgotPass = async (user, email, key, token, res) => {
 
 	/* Message Configuration */
 	const message = {
-		from: `Minhas Despesas - Sistema Gerenciador de Despesas Pessoais <nevio@test.com>`,
+		from: `Despesas Net - Sistema Gerenciador de Despesas Pessoais <${process.env.MAIL_USER}>`,
 		to: `${user} <${email}>`,
 		subject: `Redefinição de Senha`,
 		html: `
