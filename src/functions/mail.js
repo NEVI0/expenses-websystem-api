@@ -50,8 +50,8 @@ const welcome = async (user, email, res) => {
 					</div>
 			
 					<div class="subContent">
-						<small>Equipe de Programadores do sistema <em>
-						<a href="https://expenses-web-system.firebaseapp.com" target="_blank">Minhas Despesas</a>
+						<small>Equipe de desenvolvedores do sistema <em>
+						<a href="https://expenses-web-system.firebaseapp.com" target="_blank">Despesas Net</a>
 						</em></small>
 					</div>
 			
@@ -133,8 +133,8 @@ const forgotPass = async (user, email, key, token, res) => {
 					</div>
 			
 					<div class="subContent">
-						<small>Equipe de Programadores do sistema <em>
-						<a href="https://expenses-web-system.firebaseapp.com" target="_blank">Minhas Despesas</a>
+						<small>Equipe de desenvolvedores do sistema <em>
+						<a href="https://expenses-web-system.firebaseapp.com" target="_blank">Despesas Net</a>
 						</em></small>
 					</div>
 			
